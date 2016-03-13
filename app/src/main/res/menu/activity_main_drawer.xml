@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="utf-8"?>
+<menu xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <group android:checkableBehavior="single">
+        <item
+            android:id="@+id/nav_meals"
+            android:icon="@drawable/ic_menu_camera"
+            android:title="Yemekler" />
+        <item
+            android:id="@+id/nav_cart"
+            android:icon="@drawable/ic_menu_gallery"
+            android:title="Sepet" />
+        <item
+            android:id="@+id/nav_restaurants"
+            android:icon="@drawable/ic_menu_slideshow"
+            android:title="Restoranlar" />
+    </group>
+
+    <item android:title="Hesap">
+        <menu>
+            <item
+                android:id="@+id/nav_profile"
+                android:icon="@drawable/ic_menu_share"
+                android:title="Hesap Bilgileri" />
+            <item
+                android:id="@+id/nav_addresses"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Adresler" />
+            <item
+                android:id="@+id/nav_orders"
+                android:icon="@drawable/ic_menu_send"
+                android:title="Siparişlerim" />
+        </menu>
+    </item>
+
+</menu>
