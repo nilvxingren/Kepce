@@ -1,12 +1,13 @@
-<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.v7.widget.RecyclerView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/list"
+    android:name="tr.com.kepce.fragment.MealsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="tr.com.kepce.fragment.MealsFragment">
-
-    <TextView
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:text="@string/navigation_drawer_meals" />
-
-</FrameLayout>
+    android:layout_marginLeft="16dp"
+    android:layout_marginRight="16dp"
+    app:layoutManager="LinearLayoutManager"
+    tools:context="tr.com.kepce.fragment.MealsFragment"
+    tools:listitem="@layout/fragment_meals_item" />

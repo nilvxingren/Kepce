@@ -4,7 +4,6 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
-import android.support.v4.app.Fragment;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -18,6 +17,7 @@ import android.view.MenuItem;
 import tr.com.kepce.fragment.AddressesFragment;
 import tr.com.kepce.fragment.CartFragment;
 import tr.com.kepce.fragment.MealsFragment;
+import tr.com.kepce.fragment.MealsPagerFragment;
 import tr.com.kepce.fragment.OrdersFragment;
 import tr.com.kepce.fragment.ProfileFragment;
 import tr.com.kepce.fragment.RestaurantsFragment;
@@ -25,6 +25,7 @@ import tr.com.kepce.fragment.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
+        MealsPagerFragment.OnMealsPagerFragmentInteractionListener,
         MealsFragment.OnMealsFragmentInteractionListener,
         CartFragment.OnCartFragmentInteractionListener,
         RestaurantsFragment.OnRestaurantsFragmentInteractionListener,
@@ -59,7 +60,7 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, new MealsFragment())
+                    .replace(R.id.content_frame, new MealsPagerFragment())
                     .commit();
         }
     }
@@ -102,7 +103,7 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_meals) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, new MealsFragment())
+                    .replace(R.id.content_frame, new MealsPagerFragment())
                     .commit();
         } else if (id == R.id.nav_cart) {
             getSupportFragmentManager().beginTransaction()
