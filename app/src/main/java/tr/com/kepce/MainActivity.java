@@ -1,5 +1,6 @@
 package tr.com.kepce;
 
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -20,9 +21,16 @@ import tr.com.kepce.fragment.MealsFragment;
 import tr.com.kepce.fragment.OrdersFragment;
 import tr.com.kepce.fragment.ProfileFragment;
 import tr.com.kepce.fragment.RestaurantsFragment;
+import tr.com.kepce.fragment.dummy.DummyContent;
 
 public class MainActivity extends AppCompatActivity
-        implements NavigationView.OnNavigationItemSelectedListener {
+        implements NavigationView.OnNavigationItemSelectedListener,
+        MealsFragment.OnMealsFragmentInteractionListener,
+        CartFragment.OnCartFragmentInteractionListener,
+        RestaurantsFragment.OnRestaurantsFragmentInteractionListener,
+        ProfileFragment.OnProfileFragmentInteractionListener,
+        AddressesFragment.OnAddressesFragmentInteractionListener,
+        OrdersFragment.OnOrdersFragmentInteractionListener {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -126,5 +134,13 @@ public class MainActivity extends AppCompatActivity
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         drawer.closeDrawer(GravityCompat.START);
         return true;
+    }
+
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
     }
 }

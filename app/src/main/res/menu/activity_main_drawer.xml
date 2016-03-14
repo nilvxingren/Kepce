@@ -4,33 +4,33 @@
     <group android:checkableBehavior="single">
         <item
             android:id="@+id/nav_meals"
-            android:icon="@drawable/ic_menu_camera"
-            android:title="Yemekler" />
+            android:icon="@drawable/ic_restaurant_black_24dp"
+            android:title="@string/navigation_drawer_meals" />
         <item
             android:id="@+id/nav_cart"
-            android:icon="@drawable/ic_menu_gallery"
-            android:title="Sepet" />
+            android:icon="@drawable/ic_shopping_cart_black_24dp"
+            android:title="@string/navigation_drawer_cart" />
         <item
             android:id="@+id/nav_restaurants"
-            android:icon="@drawable/ic_menu_slideshow"
-            android:title="Restoranlar" />
-    </group>
+            android:icon="@drawable/ic_store_black_24dp"
+            android:title="@string/navigation_drawer_restaurants" />
 
-    <item android:title="Hesap">
-        <menu>
-            <item
-                android:id="@+id/nav_profile"
-                android:icon="@drawable/ic_menu_share"
-                android:title="Hesap Bilgileri" />
-            <item
-                android:id="@+id/nav_addresses"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Adresler" />
-            <item
-                android:id="@+id/nav_orders"
-                android:icon="@drawable/ic_menu_send"
-                android:title="Siparişlerim" />
-        </menu>
-    </item>
+        <item android:title="@string/navigation_drawer_account">
+            <menu>
+                <item
+                    android:id="@+id/nav_profile"
+                    android:icon="@drawable/ic_account_circle_black_24dp"
+                    android:title="@string/navigation_drawer_profile" />
+                <item
+                    android:id="@+id/nav_addresses"
+                    android:icon="@drawable/ic_home_black_24dp"
+                    android:title="@string/navigation_drawer_addresses" />
+                <item
+                    android:id="@+id/nav_orders"
+                    android:icon="@drawable/ic_history_black_24dp"
+                    android:title="@string/navigation_drawer_orders" />
+            </menu>
+        </item>
+    </group>
 
 </menu>

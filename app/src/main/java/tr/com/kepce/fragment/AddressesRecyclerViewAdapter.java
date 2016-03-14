@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import tr.com.kepce.R;
-import tr.com.kepce.fragment.AddressesFragment.OnListFragmentInteractionListener;
+import tr.com.kepce.fragment.AddressesFragment.OnAddressesFragmentInteractionListener;
 import tr.com.kepce.fragment.dummy.DummyContent.DummyItem;
 
 import java.util.List;
@@ -20,9 +20,9 @@ import java.util.List;
 public class AddressesRecyclerViewAdapter extends RecyclerView.Adapter<AddressesRecyclerViewAdapter.ViewHolder> {
 
     private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final OnAddressesFragmentInteractionListener mListener;
 
-    public AddressesRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public AddressesRecyclerViewAdapter(List<DummyItem> items, OnAddressesFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }

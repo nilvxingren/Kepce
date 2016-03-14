@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import tr.com.kepce.R;
-import tr.com.kepce.fragment.CartFragment.OnListFragmentInteractionListener;
+import tr.com.kepce.fragment.CartFragment.OnCartFragmentInteractionListener;
 import tr.com.kepce.fragment.dummy.DummyContent.DummyItem;
 
 import java.util.List;
@@ -20,9 +20,9 @@ import java.util.List;
 public class CartRecyclerViewAdapter extends RecyclerView.Adapter<CartRecyclerViewAdapter.ViewHolder> {
 
     private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final OnCartFragmentInteractionListener mListener;
 
-    public CartRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public CartRecyclerViewAdapter(List<DummyItem> items, OnCartFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }

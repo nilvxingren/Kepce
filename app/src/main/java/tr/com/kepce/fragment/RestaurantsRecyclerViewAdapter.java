@@ -7,7 +7,7 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import tr.com.kepce.R;
-import tr.com.kepce.fragment.RestaurantsFragment.OnListFragmentInteractionListener;
+import tr.com.kepce.fragment.RestaurantsFragment.OnRestaurantsFragmentInteractionListener;
 import tr.com.kepce.fragment.dummy.DummyContent.DummyItem;
 
 import java.util.List;
@@ -20,9 +20,9 @@ import java.util.List;
 public class RestaurantsRecyclerViewAdapter extends RecyclerView.Adapter<RestaurantsRecyclerViewAdapter.ViewHolder> {
 
     private final List<DummyItem> mValues;
-    private final OnListFragmentInteractionListener mListener;
+    private final OnRestaurantsFragmentInteractionListener mListener;
 
-    public RestaurantsRecyclerViewAdapter(List<DummyItem> items, OnListFragmentInteractionListener listener) {
+    public RestaurantsRecyclerViewAdapter(List<DummyItem> items, OnRestaurantsFragmentInteractionListener listener) {
         mValues = items;
         mListener = listener;
     }
