@@ -1,4 +1,4 @@
-package tr.com.kepce.fragment;
+package tr.com.kepce.meal;
 
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
@@ -6,25 +6,30 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.TextView;
 
-import tr.com.kepce.R;
-import tr.com.kepce.fragment.MealsFragment.OnMealsFragmentInteractionListener;
-import tr.com.kepce.fragment.dummy.DummyContent.DummyItem;
-
+import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
-/**
- * {@link RecyclerView.Adapter} that can display a {@link DummyItem} and makes a call to the
- * specified {@link OnListFragmentInteractionListener}.
- * TODO: Replace the implementation with code for your data type.
- */
+import tr.com.kepce.R;
+import tr.com.kepce.cart.CartEntity;
+import tr.com.kepce.meal.MealsFragment.OnMealsFragmentInteractionListener;
+
 public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsRecyclerViewAdapter.ViewHolder> {
 
-    private final List<DummyItem> mValues;
+    private final List<Meal> mValues;
     private final OnMealsFragmentInteractionListener mListener;
 
-    public MealsRecyclerViewAdapter(List<DummyItem> items, OnMealsFragmentInteractionListener listener) {
-        mValues = items;
+    public MealsRecyclerViewAdapter(OnMealsFragmentInteractionListener listener) {
+        mValues = new ArrayList<>();
         mListener = listener;
+    }
+
+    public void addItem(Meal meal) {
+        mValues.add(meal);
+    }
+
+    public void addItems(Meal... meals) {
+        mValues.addAll(Arrays.asList(meals));
     }
 
     @Override
@@ -37,16 +42,14 @@ public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsRecycler
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).id);
-        holder.mContentView.setText(mValues.get(position).content);
+        holder.mIdView.setText(mValues.get(position).getId());
+        holder.mContentView.setText(mValues.get(position).getName());
 
-        holder.mView.setOnClickListener(new View.OnClickListener() {
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (null != mListener) {
-                    // Notify the active callbacks interface (the activity, if the
-                    // fragment is attached to one) that an item has been selected.
-                    mListener.onListFragmentInteraction(holder.mItem);
+                    mListener.onMealSelected(holder.mItem);
                 }
             }
         });
@@ -58,14 +61,13 @@ public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<MealsRecycler
     }
 
     public class ViewHolder extends RecyclerView.ViewHolder {
-        public final View mView;
+
         public final TextView mIdView;
         public final TextView mContentView;
-        public DummyItem mItem;
+        public Meal mItem;
 
         public ViewHolder(View view) {
             super(view);
-            mView = view;
             mIdView = (TextView) view.findViewById(R.id.id);
             mContentView = (TextView) view.findViewById(R.id.content);
         }

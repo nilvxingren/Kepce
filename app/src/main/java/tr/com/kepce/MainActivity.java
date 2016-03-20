@@ -1,9 +1,7 @@
 package tr.com.kepce;
 
-import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.support.design.widget.Snackbar;
 import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
@@ -14,18 +12,22 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 
-import tr.com.kepce.fragment.AddressesFragment;
-import tr.com.kepce.fragment.CartFragment;
-import tr.com.kepce.fragment.MealsFragment;
-import tr.com.kepce.fragment.MealsPagerFragment;
-import tr.com.kepce.fragment.OrdersFragment;
-import tr.com.kepce.fragment.ProfileFragment;
-import tr.com.kepce.fragment.RestaurantsFragment;
-import tr.com.kepce.fragment.dummy.DummyContent;
+import tr.com.kepce.address.Address;
+import tr.com.kepce.address.AddressesFragment;
+import tr.com.kepce.cart.CartEntity;
+import tr.com.kepce.cart.CartFragment;
+import tr.com.kepce.meal.Meal;
+import tr.com.kepce.meal.MealsFragment;
+import tr.com.kepce.meal.MealsPagerFragment;
+import tr.com.kepce.order.Order;
+import tr.com.kepce.order.OrdersFragment;
+import tr.com.kepce.profile.User;
+import tr.com.kepce.profile.ProfileFragment;
+import tr.com.kepce.restaurant.Restaurant;
+import tr.com.kepce.restaurant.RestaurantsFragment;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
-        MealsPagerFragment.OnMealsPagerFragmentInteractionListener,
         MealsFragment.OnMealsFragmentInteractionListener,
         CartFragment.OnCartFragmentInteractionListener,
         RestaurantsFragment.OnRestaurantsFragmentInteractionListener,
@@ -44,8 +46,10 @@ public class MainActivity extends AppCompatActivity
         fab.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                Snackbar.make(view, "Replace with your own action", Snackbar.LENGTH_LONG)
-                        .setAction("Action", null).show();
+                getSupportFragmentManager().beginTransaction()
+                        .replace(R.id.content_frame, new CartFragment())
+                        .addToBackStack(null)
+                        .commit();
             }
         });
 
@@ -83,9 +87,6 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
@@ -96,7 +97,6 @@ public class MainActivity extends AppCompatActivity
         return super.onOptionsItemSelected(item);
     }
 
-    @SuppressWarnings("StatementWithEmptyBody")
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
@@ -138,10 +138,47 @@ public class MainActivity extends AppCompatActivity
     }
 
     @Override
-    public void onListFragmentInteraction(DummyContent.DummyItem item) {
+    public void onAddressSelected(Address address) {
+
     }
 
     @Override
-    public void onFragmentInteraction(Uri uri) {
+    public void onCartEntitySelected(CartEntity entity) {
+
+    }
+
+    @Override
+    public void onCartEntityModified(CartEntity entity) {
+
+    }
+
+    @Override
+    public void onCartEntityDeleted(CartEntity entity) {
+
+    }
+
+    @Override
+    public void onCartCleared() {
+
+    }
+
+    @Override
+    public void onMealSelected(Meal meal) {
+
+    }
+
+    @Override
+    public void onOrderSelected(Order order) {
+
+    }
+
+    @Override
+    public void onProfileSaved(User user) {
+
+    }
+
+    @Override
+    public void onRestaurantSelected(Restaurant restaurant) {
+
     }
 }

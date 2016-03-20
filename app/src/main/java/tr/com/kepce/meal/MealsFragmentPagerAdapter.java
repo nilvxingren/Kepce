@@ -1,12 +1,9 @@
-package tr.com.kepce.fragment;
+package tr.com.kepce.meal;
 
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
-/**
- * Created by eray on 15/03/16.
- */
 public class MealsFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     private static final String[] TITLES = {"Featured", "Favorites", "Nearby"};
