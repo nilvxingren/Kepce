@@ -5,9 +5,11 @@ import java.util.Date;
 public class User {
 
     private String id;
+    private String email;
+    private String password;
     private String firstName;
     private String lastName;
-    private Gender gender = Gender.UNKNOWN;
+    private Gender gender;
     private String phoneNumber;
     private Date birthday;
     private int weight;
@@ -30,7 +32,7 @@ public class User {
     }
 
     public Gender getGender() {
-        return gender;
+        return gender == null ? Gender.UNKNOWN : gender;
     }
 
     public String getPhoneNumber() {
