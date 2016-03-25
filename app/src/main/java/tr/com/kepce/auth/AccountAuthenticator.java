@@ -35,10 +35,9 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
                              String authTokenType, String[] requiredFeatures, Bundle options)
             throws NetworkErrorException {
         Intent intent = new Intent(mContext, LoginActivity.class);
-        intent.putExtra(LoginActivity.ARG_ACCOUNT_TYPE, accountType);
-        intent.putExtra(LoginActivity.ARG_AUTH_TYPE, authTokenType);
-        intent.putExtra(LoginActivity.ARG_ADDING_NEW_ACCOUNT, true);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, accountType);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
+        intent.putExtra(LoginActivity.ARG_ADDING_NEW_ACCOUNT, true);
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(AccountManager.KEY_INTENT, intent);
@@ -62,7 +61,7 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
             if (!TextUtils.isEmpty(password)) {
                 try {
                     authToken = Kepce.getService().login(new User(account.name, password))
-                            .execute().body().response;
+                            .execute().body().data;
                 } catch (IOException e) {
                     // do nothing
                 }
@@ -79,8 +78,8 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
 
         Intent intent = new Intent(mContext, LoginActivity.class);
         intent.putExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE, response);
-        intent.putExtra(LoginActivity.ARG_ACCOUNT_TYPE, account.type);
-        intent.putExtra(LoginActivity.ARG_AUTH_TYPE, authTokenType);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_NAME, account.name);
+        intent.putExtra(AccountManager.KEY_ACCOUNT_TYPE, account.type);
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(AccountManager.KEY_INTENT, intent);
@@ -101,6 +100,8 @@ public class AccountAuthenticator extends AbstractAccountAuthenticator {
     @Override
     public Bundle hasFeatures(AccountAuthenticatorResponse response, Account account,
                               String[] features) throws NetworkErrorException {
-        return null;
+        Bundle result = new Bundle();
+        result.putBoolean(AccountManager.KEY_BOOLEAN_RESULT, false);
+        return result;
     }
 }

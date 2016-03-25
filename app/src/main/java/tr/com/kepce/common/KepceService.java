@@ -13,7 +13,7 @@ import tr.com.kepce.restaurant.Restaurant;
 
 public interface KepceService {
 
-    @POST("register")
+    @POST("signup")
     Call<KepceResponse<String>> register(@Body User user);
 
     @POST("login")

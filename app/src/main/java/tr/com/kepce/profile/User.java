@@ -12,8 +12,8 @@ public class User {
     private Gender gender;
     private String phoneNumber;
     private Date birthday;
-    private int weight;
-    private int height;
+    private Integer weight;
+    private Integer height;
 
     public User() {
     }
@@ -51,11 +51,11 @@ public class User {
         return birthday;
     }
 
-    public int getWeight() {
+    public Integer getWeight() {
         return weight;
     }
 
-    public int getHeight() {
+    public Integer getHeight() {
         return height;
     }
 }

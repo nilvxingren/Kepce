@@ -32,27 +32,26 @@ import android.widget.AutoCompleteTextView;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import tr.com.kepce.common.Kepce;
+import tr.com.kepce.common.KepceResponse;
+import tr.com.kepce.profile.User;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
 public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    public static final String ARG_ACCOUNT_TYPE = "account_type";
-    public static final String ARG_AUTH_TYPE = "auth_type";
-    public final static String ARG_ACCOUNT_NAME = "account_name";
     public static final String ARG_ADDING_NEW_ACCOUNT = "adding_new_account";
 
     private static final int REQUEST_READ_CONTACTS = 0;
     private static final int REQUEST_REGISTER = 1;
-
-    private static final String[] DUMMY_CREDENTIALS = new String[]{
-            "foo@example.com:hello", "bar@example.com:world"
-    };
-
-    private UserLoginTask mAuthTask = null;
 
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
@@ -64,15 +63,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         super.onCreate(savedInstanceState);
         mAccountAuthenticatorResponse =
                 getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
-
         if (mAccountAuthenticatorResponse != null) {
             mAccountAuthenticatorResponse.onRequestContinued();
         }
 
         setContentView(R.layout.activity_login);
-        // Set up the login form.
+
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        String accountName = getIntent().getStringExtra(ARG_ACCOUNT_NAME);
+        String accountName = getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
         if (!TextUtils.isEmpty(accountName)) {
             mEmailView.setText(accountName);
         }
@@ -90,11 +88,23 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button mEmailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
-        mEmailSignInButton.setOnClickListener(new OnClickListener() {
+        Button emailSignInButton = (Button) findViewById(R.id.email_sign_in_button);
+        assert emailSignInButton != null;
+        emailSignInButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View view) {
                 attemptLogin();
+            }
+        });
+
+        Button registerButton = (Button) findViewById(R.id.register_button);
+        assert registerButton != null;
+        registerButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                registerIntent.putExtras(getIntent().getExtras());
+                startActivityForResult(registerIntent, REQUEST_REGISTER);
             }
         });
 
@@ -143,16 +153,12 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private void attemptLogin() {
-        if (mAuthTask != null) {
-            return;
-        }
-
         // Reset errors.
         mEmailView.setError(null);
         mPasswordView.setError(null);
 
         // Store values at the time of the login attempt.
-        String email = mEmailView.getText().toString();
+        final String email = mEmailView.getText().toString();
         String password = mPasswordView.getText().toString();
 
         boolean cancel = false;
@@ -184,8 +190,34 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-            mAuthTask = new UserLoginTask(email, password);
-            mAuthTask.execute((Void) null);
+
+            Kepce.getService().login(new User(email, password)).enqueue(new Callback<KepceResponse<String>>() {
+                @Override
+                public void onResponse(Call<KepceResponse<String>> call, Response<KepceResponse<String>> response) {
+                    if (response.body().code == 0) {
+                        Bundle data = new Bundle();
+                        data.putString(AccountManager.KEY_ACCOUNT_NAME, email);
+                        data.putString(AccountManager.KEY_ACCOUNT_TYPE,
+                                getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_TYPE));
+                        data.putString(AccountManager.KEY_AUTHTOKEN, response.body().data);
+
+                        Intent intent = new Intent();
+                        intent.putExtras(data);
+                        finish(intent);
+                    } else {
+                        mPasswordView.setError(getString(R.string.error_incorrect_password));
+                        mPasswordView.requestFocus();
+                    }
+                    showProgress(false);
+                }
+
+                @Override
+                public void onFailure(Call<KepceResponse<String>> call, Throwable t) {
+                    Toast.makeText(LoginActivity.this, t.getLocalizedMessage(),
+                            Toast.LENGTH_SHORT).show();
+                    showProgress(false);
+                }
+            });
         }
     }
 
@@ -264,19 +296,17 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void finish(Intent intent) {
         AccountManager accountManager = AccountManager.get(this);
         String accountName = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-        String accountPassword = intent.getStringExtra(PARAM_USER_PASS);
         Account account = new Account(accountName, intent.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE));
 
         if (getIntent().getBooleanExtra(ARG_ADDING_NEW_ACCOUNT, false)) {
             String authtoken = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
-            String authtokenType = mAuthTokenType;
 
             // Creating the account on the device and setting the auth token we got
             // (Not setting the auth token will cause another call to the server to authenticate the user)
-            accountManager.addAccountExplicitly(account, accountPassword, null);
-            accountManager.setAuthToken(account, authtokenType, authtoken);
+            accountManager.addAccountExplicitly(account, null, null);
+            accountManager.setAuthToken(account, null, authtoken);
         } else {
-            accountManager.setPassword(account, accountPassword);
+            accountManager.setPassword(account, null);
         }
 
         setAccountAuthenticatorResult(intent.getExtras());
@@ -284,6 +314,14 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         finish();
     }
 
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_REGISTER && resultCode == RESULT_OK) {
+            finish(data);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
+    }
 
     private interface ProfileQuery {
         String[] PROJECTION = {
@@ -293,57 +331,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
 
         int ADDRESS = 0;
         int IS_PRIMARY = 1;
-    }
-
-    public class UserLoginTask extends AsyncTask<Void, Void, Boolean> {
-
-        private final String mEmail;
-        private final String mPassword;
-
-        UserLoginTask(String email, String password) {
-            mEmail = email;
-            mPassword = password;
-        }
-
-        @Override
-        protected Boolean doInBackground(Void... params) {
-            try {
-                // Simulate network access.
-                Thread.sleep(2000);
-            } catch (InterruptedException e) {
-                return false;
-            }
-
-            for (String credential : DUMMY_CREDENTIALS) {
-                String[] pieces = credential.split(":");
-                if (pieces[0].equals(mEmail)) {
-                    // Account exists, return true if the password matches.
-                    return pieces[1].equals(mPassword);
-                }
-            }
-
-            // TODO: register the new account here.
-            return true;
-        }
-
-        @Override
-        protected void onPostExecute(final Boolean success) {
-            mAuthTask = null;
-            showProgress(false);
-
-            if (success) {
-                finish();
-            } else {
-                mPasswordView.setError(getString(R.string.error_incorrect_password));
-                mPasswordView.requestFocus();
-            }
-        }
-
-        @Override
-        protected void onCancelled() {
-            mAuthTask = null;
-            showProgress(false);
-        }
     }
 
     // AccountAuthenticatorActivity
