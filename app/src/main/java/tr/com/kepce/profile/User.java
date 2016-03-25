@@ -15,6 +15,14 @@ public class User {
     private int weight;
     private int height;
 
+    public User() {
+    }
+
+    public User(String email, String password) {
+        this.email = email;
+        this.password = password;
+    }
+
     public String getId() {
         return id;
     }
