@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import tr.com.kepce.R;
@@ -30,6 +31,14 @@ public class RestaurantsRecyclerViewAdapter
 
     public void addItems(Restaurant... restaurants) {
         mValues.addAll(Arrays.asList(restaurants));
+    }
+
+    public void addItems(Collection<Restaurant> restaurants) {
+        mValues.addAll(restaurants);
+    }
+
+    public void clearItems() {
+        mValues.clear();
     }
 
     @Override

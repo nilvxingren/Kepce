@@ -25,6 +25,7 @@ import tr.com.kepce.address.Address;
 import tr.com.kepce.address.AddressesFragment;
 import tr.com.kepce.cart.CartEntity;
 import tr.com.kepce.cart.CartFragment;
+import tr.com.kepce.common.Kepce;
 import tr.com.kepce.meal.Meal;
 import tr.com.kepce.meal.MealsFragment;
 import tr.com.kepce.meal.MealsPagerFragment;
@@ -116,11 +117,9 @@ public class MainActivity extends AppCompatActivity
         View userInfoView = mNavigationView.getHeaderView(0);
         View loginView = mNavigationView.getHeaderView(1);
 
-        final AccountManager accountManager = AccountManager.get(this);
-        Account[] accounts = accountManager.getAccountsByType("tr.com.kepce");
-        if (accounts.length > 0) {
-            TextView emailTextView = (TextView) userInfoView.findViewById(R.id.textView);
-            emailTextView.setText(accounts[0].name);
+        if (Kepce.getAuthToken(this, false) == null) {
+            //TextView emailTextView = (TextView) userInfoView.findViewById(R.id.textView);
+            //emailTextView.setText(accounts[0].name);
             userInfoView.setVisibility(View.VISIBLE);
             loginView.setVisibility(View.GONE);
 
