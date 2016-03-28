@@ -1,13 +1,22 @@
 package tr.com.kepce.address;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Address {
 
+    @SerializedName("id")
     private String id;
+    @SerializedName("title")
     private String title;
-    private int[] location;
+    @SerializedName("geo")
+    private double[] location;
+    @SerializedName("city")
     private String city;
+    @SerializedName("district")
     private String district;
+    @SerializedName("text")
     private String address;
+    @SerializedName("definition")
     private String description;
 
     public String getId() {
@@ -18,7 +27,7 @@ public class Address {
         return title;
     }
 
-    public int[] getLocation() {
+    public double[] getLocation() {
         return location;
     }
 

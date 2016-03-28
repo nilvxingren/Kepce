@@ -1,14 +1,16 @@
 package tr.com.kepce.restaurant;
 
+import tr.com.kepce.common.PagedList;
+
 public class RestaurantsLoadedEvent {
 
-    private Restaurants mRestaurants;
+    private PagedList<Restaurant> mRestaurants;
 
-    public RestaurantsLoadedEvent(Restaurants restaurants) {
+    public RestaurantsLoadedEvent(PagedList<Restaurant> restaurants) {
         mRestaurants = restaurants;
     }
 
-    public Restaurants getRestaurants() {
+    public PagedList<Restaurant> getRestaurants() {
         return mRestaurants;
     }
 }

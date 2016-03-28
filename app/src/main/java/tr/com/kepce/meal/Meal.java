@@ -1,20 +1,35 @@
 package tr.com.kepce.meal;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.List;
+
+import tr.com.kepce.restaurant.Restaurant;
 
 public class Meal {
 
+    @SerializedName("id")
     private String id;
+    @SerializedName("name")
     private String name;
-    private String category;
-    private float price;
-    private int calories;
-    private float co2e;
+    @SerializedName("category")
+    private Integer category;
+    @SerializedName("price")
+    private Float price;
+    @SerializedName("calorie")
+    private Integer calories;
+    @SerializedName("carbonFootprint")
+    private Float co2e;
+    @SerializedName("picture")
     private String photo;
-    private boolean available;
-    private List<Subproduct> subproducts;
+    @SerializedName("available")
+    private Boolean available;
+    @SerializedName("restaurantId")
     private String restaurantId;
-    private String restaurantName;
+    @SerializedName("restaurant")
+    private Restaurant restaurant;
+    // TODO: subproducts
+    private List<Subproduct> subproducts;
 
     public String getId() {
         return id;
@@ -24,19 +39,19 @@ public class Meal {
         return name;
     }
 
-    public String getCategory() {
+    public Integer getCategory() {
         return category;
     }
 
-    public float getPrice() {
+    public Float getPrice() {
         return price;
     }
 
-    public int getCalories() {
+    public Integer getCalories() {
         return calories;
     }
 
-    public float getCo2e() {
+    public Float getCo2e() {
         return co2e;
     }
 
@@ -44,7 +59,7 @@ public class Meal {
         return photo;
     }
 
-    public boolean isAvailable() {
+    public Boolean isAvailable() {
         return available;
     }
 
@@ -56,7 +71,7 @@ public class Meal {
         return restaurantId;
     }
 
-    public String getRestaurantName() {
-        return restaurantName;
+    public Restaurant getRestaurant() {
+        return restaurant;
     }
 }

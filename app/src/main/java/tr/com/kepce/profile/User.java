@@ -1,18 +1,30 @@
 package tr.com.kepce.profile;
 
+import com.google.gson.annotations.SerializedName;
+
 import java.util.Date;
 
 public class User {
 
+    @SerializedName("id")
     private String id;
+    @SerializedName("email")
     private String email;
+    @SerializedName("password")
     private String password;
+    @SerializedName("name")
     private String firstName;
+    @SerializedName("surname")
     private String lastName;
+    @SerializedName("gender")
     private Gender gender;
+    @SerializedName("phone")
     private String phoneNumber;
+    @SerializedName("birthday")
     private Date birthday;
+    @SerializedName("weight")
     private Integer weight;
+    @SerializedName("height")
     private Integer height;
 
     public User() {

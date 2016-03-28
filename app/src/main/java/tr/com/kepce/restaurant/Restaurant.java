@@ -1,15 +1,27 @@
 package tr.com.kepce.restaurant;
 
+import com.google.gson.annotations.SerializedName;
+
 public class Restaurant {
 
+    @SerializedName("id")
     private String id;
+    @SerializedName("name")
     private String name;
-    private int[] location;
+    @SerializedName("geo")
+    private Double[] location;
+    @SerializedName("address")
     private String address;
+    @SerializedName("phone")
     private String phoneNumber;
-    private float minPriceForDelivery;
-    private float deliveryPricePerDistanceUnit;
-    private String type;
+    @SerializedName("minimumAmount")
+    private Float minPriceForDelivery;
+    @SerializedName("kmAmount")
+    private Float minPricePerKm;
+    @SerializedName("type")
+    private Integer type;
+    @SerializedName("carbonFootprint")
+    private Float co2e;
 
     public String getId() {
         return id;
@@ -19,7 +31,7 @@ public class Restaurant {
         return name;
     }
 
-    public int[] getLocation() {
+    public Double[] getLocation() {
         return location;
     }
 
@@ -31,15 +43,19 @@ public class Restaurant {
         return phoneNumber;
     }
 
-    public float getMinPriceForDelivery() {
+    public Float getMinPriceForDelivery() {
         return minPriceForDelivery;
     }
 
-    public float getDeliveryPricePerDistanceUnit() {
-        return deliveryPricePerDistanceUnit;
+    public Float getMinPricePerKm() {
+        return minPricePerKm;
     }
 
-    public String getType() {
+    public Integer getType() {
         return type;
+    }
+
+    public Float getCo2e() {
+        return co2e;
     }
 }

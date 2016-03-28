@@ -14,14 +14,13 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
-import java.util.List;
-
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import tr.com.kepce.R;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.common.KepceResponse;
+import tr.com.kepce.common.PagedList;
 
 public class RestaurantsFragment extends Fragment {
 
@@ -35,16 +34,16 @@ public class RestaurantsFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        Kepce.getService().getRestaurants(Kepce.getAuthToken(getContext(), true), 20, 0, 0)
-                .enqueue(new Callback<KepceResponse<Restaurants>>() {
+        Kepce.getService().listRestaurants(20, 0, 0)
+                .enqueue(new Callback<KepceResponse<PagedList<Restaurant>>>() {
                     @Override
-                    public void onResponse(Call<KepceResponse<Restaurants>> call,
-                                           Response<KepceResponse<Restaurants>> response) {
+                    public void onResponse(Call<KepceResponse<PagedList<Restaurant>>> call,
+                                           Response<KepceResponse<PagedList<Restaurant>>> response) {
                         EventBus.getDefault().postSticky(new RestaurantsLoadedEvent(response.body().data));
                     }
 
                     @Override
-                    public void onFailure(Call<KepceResponse<Restaurants>> call, Throwable t) {
+                    public void onFailure(Call<KepceResponse<PagedList<Restaurant>>> call, Throwable t) {
                     }
                 });
     }
@@ -94,7 +93,7 @@ public class RestaurantsFragment extends Fragment {
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onRestaurantsLoaded(RestaurantsLoadedEvent event) {
         mAdapter.clearItems();
-        mAdapter.addItems(event.getRestaurants().response);
+        mAdapter.addItems(event.getRestaurants().list);
     }
 
     public interface OnRestaurantsFragmentInteractionListener {
