@@ -1,12 +1,9 @@
 package tr.com.kepce;
 
-import android.accounts.Account;
-import android.accounts.AccountManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
-import android.view.View;
 import android.support.design.widget.NavigationView;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -15,7 +12,7 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.TextView;
+import android.view.View;
 
 import com.google.android.gms.appindexing.Action;
 import com.google.android.gms.appindexing.AppIndex;
@@ -31,8 +28,8 @@ import tr.com.kepce.meal.MealsFragment;
 import tr.com.kepce.meal.MealsPagerFragment;
 import tr.com.kepce.order.Order;
 import tr.com.kepce.order.OrdersFragment;
-import tr.com.kepce.profile.User;
 import tr.com.kepce.profile.ProfileFragment;
+import tr.com.kepce.profile.User;
 import tr.com.kepce.restaurant.Restaurant;
 import tr.com.kepce.restaurant.RestaurantsFragment;
 
@@ -117,7 +114,7 @@ public class MainActivity extends AppCompatActivity
         View userInfoView = mNavigationView.getHeaderView(0);
         View loginView = mNavigationView.getHeaderView(1);
 
-        if (Kepce.getAuthToken(this, false) == null) {
+        if (Kepce.getAuthToken(this, false) != null) {
             //TextView emailTextView = (TextView) userInfoView.findViewById(R.id.textView);
             //emailTextView.setText(accounts[0].name);
             userInfoView.setVisibility(View.VISIBLE);

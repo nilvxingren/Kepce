@@ -9,6 +9,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.Toast;
 
 import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
@@ -32,23 +33,6 @@ public class RestaurantsFragment extends Fragment {
     }
 
     @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        Kepce.getService().listRestaurants(20, 0, 0)
-                .enqueue(new Callback<KepceResponse<PagedList<Restaurant>>>() {
-                    @Override
-                    public void onResponse(Call<KepceResponse<PagedList<Restaurant>>> call,
-                                           Response<KepceResponse<PagedList<Restaurant>>> response) {
-                        EventBus.getDefault().postSticky(new RestaurantsLoadedEvent(response.body().data));
-                    }
-
-                    @Override
-                    public void onFailure(Call<KepceResponse<PagedList<Restaurant>>> call, Throwable t) {
-                    }
-                });
-    }
-
-    @Override
     public void onStart() {
         super.onStart();
         EventBus.getDefault().register(this);
@@ -69,6 +53,25 @@ public class RestaurantsFragment extends Fragment {
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new RestaurantsRecyclerViewAdapter(mListener);
         recyclerView.setAdapter(mAdapter);
+
+        Kepce.getService().listRestaurants(20, 0, 0)
+                .enqueue(new Callback<KepceResponse<PagedList<Restaurant>>>() {
+                    @Override
+                    public void onResponse(Call<KepceResponse<PagedList<Restaurant>>> call,
+                                           Response<KepceResponse<PagedList<Restaurant>>> response) {
+                        if (response.body().code == 0) {
+                            EventBus.getDefault().postSticky(new RestaurantsLoadedEvent(response.body().data));
+                        } else {
+                            Toast.makeText(getContext(), "Error Code: " + response.body().code,
+                                    Toast.LENGTH_SHORT).show();
+                        }
+                    }
+
+                    @Override
+                    public void onFailure(Call<KepceResponse<PagedList<Restaurant>>> call, Throwable t) {
+                        Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                    }
+                });
 
         return view;
     }
@@ -94,6 +97,7 @@ public class RestaurantsFragment extends Fragment {
     public void onRestaurantsLoaded(RestaurantsLoadedEvent event) {
         mAdapter.clearItems();
         mAdapter.addItems(event.getRestaurants().list);
+        mAdapter.notifyDataSetChanged();
     }
 
     public interface OnRestaurantsFragmentInteractionListener {

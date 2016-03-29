@@ -19,7 +19,7 @@ public class MealsFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public Fragment getItem(int position) {
-        return new MealsFragment();
+        return MealsFragment.newInstance(position);
     }
 
     @Override

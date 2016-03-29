@@ -165,19 +165,13 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             // perform the user login attempt.
             showProgress(true);
 
-            Kepce.getService().register(new User(email, password)).enqueue(new Callback<KepceResponse<String>>() {
+            Kepce.getService().register(new User(email, password)).enqueue(new Callback<KepceResponse<User>>() {
                 @Override
-                public void onResponse(Call<KepceResponse<String>> call, Response<KepceResponse<String>> response) {
+                public void onResponse(Call<KepceResponse<User>> call, Response<KepceResponse<User>> response) {
                     if (response.body().code == 0) {
-                        Bundle data = new Bundle();
-                        data.putString(AccountManager.KEY_ACCOUNT_NAME, email);
-                        data.putString(AccountManager.KEY_ACCOUNT_TYPE,
-                                getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_TYPE));
-                        data.putString(AccountManager.KEY_AUTHTOKEN, response.body().data);
-
-                        Intent intent = new Intent();
-                        intent.putExtras(data);
-                        setResult(RESULT_OK, intent);
+                        Toast.makeText(RegisterActivity.this, "You are registered. Please login",
+                                Toast.LENGTH_SHORT).show();
+                        setResult(RESULT_OK);
                         finish();
                     } else {
                         mPasswordView.setError(getString(R.string.error_incorrect_password));
@@ -187,7 +181,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
                 }
 
                 @Override
-                public void onFailure(Call<KepceResponse<String>> call, Throwable t) {
+                public void onFailure(Call<KepceResponse<User>> call, Throwable t) {
                     Toast.makeText(RegisterActivity.this, t.getLocalizedMessage(),
                             Toast.LENGTH_SHORT).show();
                     showProgress(false);

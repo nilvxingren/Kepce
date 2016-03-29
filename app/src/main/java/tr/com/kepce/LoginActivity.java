@@ -317,7 +317,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         if (requestCode == REQUEST_REGISTER && resultCode == RESULT_OK) {
-            finish(data);
+            // TODO finish(data);
         } else {
             super.onActivityResult(requestCode, resultCode, data);
         }

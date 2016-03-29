@@ -51,8 +51,8 @@ public class RestaurantsRecyclerViewAdapter
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
         holder.mItem = mValues.get(position);
-        holder.mIdView.setText(mValues.get(position).getId());
-        holder.mContentView.setText(mValues.get(position).getName());
+        holder.mNameView.setText(mValues.get(position).getName());
+        holder.mDistanceView.setText(mValues.get(position).getCo2e().toString());
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -71,19 +71,19 @@ public class RestaurantsRecyclerViewAdapter
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public final TextView mIdView;
-        public final TextView mContentView;
+        public final TextView mNameView;
+        public final TextView mDistanceView;
         public Restaurant mItem;
 
         public ViewHolder(View view) {
             super(view);
-            mIdView = (TextView) view.findViewById(R.id.id);
-            mContentView = (TextView) view.findViewById(R.id.content);
+            mNameView = (TextView) view.findViewById(R.id.name);
+            mDistanceView = (TextView) view.findViewById(R.id.distance);
         }
 
         @Override
         public String toString() {
-            return super.toString() + " '" + mContentView.getText() + "'";
+            return super.toString() + " '" + mNameView.getText() + "'";
         }
     }
 }
