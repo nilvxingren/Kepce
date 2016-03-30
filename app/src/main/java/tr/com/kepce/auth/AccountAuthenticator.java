@@ -12,7 +12,6 @@ import android.text.TextUtils;
 
 import java.io.IOException;
 
-import tr.com.kepce.LoginActivity;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.profile.User;
 

@@ -1,27 +1,20 @@
-package tr.com.kepce;
+package tr.com.kepce.auth;
 
-import android.accounts.Account;
-import android.accounts.AccountAuthenticatorResponse;
-import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.annotation.TargetApi;
-import android.content.Intent;
-import android.content.pm.PackageManager;
-import android.support.annotation.NonNull;
-import android.support.design.widget.Snackbar;
-import android.support.v7.app.AppCompatActivity;
 import android.app.LoaderManager.LoaderCallbacks;
-
 import android.content.CursorLoader;
 import android.content.Loader;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
-
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.ContactsContract;
+import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
+import android.support.v7.app.AppCompatActivity;
 import android.text.TextUtils;
 import android.view.KeyEvent;
 import android.view.View;
@@ -34,46 +27,43 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import tr.com.kepce.R;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.common.KepceResponse;
 import tr.com.kepce.profile.User;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class RegisterActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
 
-    public static final String ARG_ADDING_NEW_ACCOUNT = "adding_new_account";
-
+    private static final String KEY_REQUESTED = "requested";
     private static final int REQUEST_READ_CONTACTS = 0;
-    private static final int REQUEST_REGISTER = 1;
 
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private boolean mRequested;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mAccountAuthenticatorResponse =
-                getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
-        if (mAccountAuthenticatorResponse != null) {
-            mAccountAuthenticatorResponse.onRequestContinued();
+        setContentView(R.layout.activity_register);
+        if (savedInstanceState != null) {
+            mRequested = savedInstanceState.getBoolean(KEY_REQUESTED);
         }
-
-        setContentView(R.layout.activity_login);
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
-        String accountName = getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-        if (!TextUtils.isEmpty(accountName)) {
-            mEmailView.setText(accountName);
-        }
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -97,19 +87,30 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             }
         });
 
-        Button registerButton = (Button) findViewById(R.id.register_button);
-        assert registerButton != null;
-        registerButton.setOnClickListener(new OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-                registerIntent.putExtras(getIntent().getExtras());
-                startActivityForResult(registerIntent, REQUEST_REGISTER);
-            }
-        });
-
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        if (mRequested) {
+            showProgress(true);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_REQUESTED, mRequested);
     }
 
     private void populateAutoComplete() {
@@ -190,34 +191,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-
-            Kepce.getService().login(new User(email, password)).enqueue(new Callback<KepceResponse<String>>() {
-                @Override
-                public void onResponse(Call<KepceResponse<String>> call, Response<KepceResponse<String>> response) {
-                    if (response.body().code == 0) {
-                        Bundle data = new Bundle();
-                        data.putString(AccountManager.KEY_ACCOUNT_NAME, email);
-                        data.putString(AccountManager.KEY_ACCOUNT_TYPE,
-                                getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_TYPE));
-                        data.putString(AccountManager.KEY_AUTHTOKEN, response.body().data);
-
-                        Intent intent = new Intent();
-                        intent.putExtras(data);
-                        finish(intent);
-                    } else {
-                        mPasswordView.setError(getString(R.string.error_incorrect_password));
-                        mPasswordView.requestFocus();
-                    }
-                    showProgress(false);
-                }
-
-                @Override
-                public void onFailure(Call<KepceResponse<String>> call, Throwable t) {
-                    Toast.makeText(LoginActivity.this, t.getLocalizedMessage(),
-                            Toast.LENGTH_SHORT).show();
-                    showProgress(false);
-                }
-            });
+            loadData(new User(email, password));
         }
     }
 
@@ -226,7 +200,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 7;
+        return password.length() > 0;
     }
 
     private void showProgress(final boolean show) {
@@ -287,40 +261,10 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(LoginActivity.this,
+                new ArrayAdapter<>(RegisterActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
-    }
-
-    private void finish(Intent intent) {
-        AccountManager accountManager = AccountManager.get(this);
-        String accountName = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
-        Account account = new Account(accountName, intent.getStringExtra(AccountManager.KEY_ACCOUNT_TYPE));
-
-        if (getIntent().getBooleanExtra(ARG_ADDING_NEW_ACCOUNT, false)) {
-            String authtoken = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
-
-            // Creating the account on the device and setting the auth token we got
-            // (Not setting the auth token will cause another call to the server to authenticate the user)
-            accountManager.addAccountExplicitly(account, null, null);
-            accountManager.setAuthToken(account, null, authtoken);
-        } else {
-            accountManager.setPassword(account, null);
-        }
-
-        setAccountAuthenticatorResult(intent.getExtras());
-        setResult(RESULT_OK, intent);
-        finish();
-    }
-
-    @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        if (requestCode == REQUEST_REGISTER && resultCode == RESULT_OK) {
-            // TODO finish(data);
-        } else {
-            super.onActivityResult(requestCode, resultCode, data);
-        }
     }
 
     private interface ProfileQuery {
@@ -333,37 +277,44 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
         int IS_PRIMARY = 1;
     }
 
-    // AccountAuthenticatorActivity
-
-    private AccountAuthenticatorResponse mAccountAuthenticatorResponse = null;
-    private Bundle mResultBundle = null;
-
-    /**
-     * Set the result that is to be sent as the result of the request that caused this
-     * Activity to be launched. If result is null or this method is never called then
-     * the request will be canceled.
-     *
-     * @param result this is returned as the result of the AbstractAccountAuthenticator request
-     */
-    public final void setAccountAuthenticatorResult(Bundle result) {
-        mResultBundle = result;
+    @Override
+    public void onBackPressed() {
+        setResult(RESULT_CANCELED);
+        super.onBackPressed();
     }
 
-    /**
-     * Sends the result or a Constants.ERROR_CODE_CANCELED error if a result isn't present.
-     */
-    public void finish() {
-        if (mAccountAuthenticatorResponse != null) {
-            // send the result bundle back if set, otherwise send an error.
-            if (mResultBundle != null) {
-                mAccountAuthenticatorResponse.onResult(mResultBundle);
-            } else {
-                mAccountAuthenticatorResponse.onError(AccountManager.ERROR_CODE_CANCELED,
-                        "canceled");
-            }
-            mAccountAuthenticatorResponse = null;
+    private void loadData(User user) {
+        if (mRequested) {
+            return;
         }
-        super.finish();
+        mRequested = true;
+        Kepce.getService().register(user).enqueue(new Callback<KepceResponse<User>>() {
+            @Override
+            public void onResponse(Call<KepceResponse<User>> call, Response<KepceResponse<User>> response) {
+                EventBus.getDefault().postSticky(new RegisterEvent(response.body()));
+            }
+
+            @Override
+            public void onFailure(Call<KepceResponse<User>> call, Throwable t) {
+                Toast.makeText(RegisterActivity.this, t.getLocalizedMessage(),
+                        Toast.LENGTH_SHORT).show();
+                showProgress(false);
+            }
+        });
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onRegister(RegisterEvent event) {
+        if (event.getResponse().code == 0) {
+            Toast.makeText(RegisterActivity.this, "You are registered. Please login",
+                    Toast.LENGTH_SHORT).show();
+            setResult(RESULT_OK);
+            finish();
+        } else {
+            mPasswordView.setError(getString(R.string.error_incorrect_password));
+            mPasswordView.requestFocus();
+        }
+        showProgress(false);
     }
 }
 

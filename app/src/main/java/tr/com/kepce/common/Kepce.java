@@ -16,6 +16,7 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class Kepce {
 
     public static final String ACCOUNT_TYPE = "tr.com.kepce";
+    public static final String AUTH_TOKEN_TYPE = "kepce";
 
     private static final Kepce INSTANCE = new Kepce();
     private static final String BASE_URL = "http://kpc.eu-1.evennode.com/api/";
@@ -36,25 +37,20 @@ public class Kepce {
         return INSTANCE.mKepceService;
     }
 
+    public static String peekAuthToken(Context context) {
+        return getAuthToken(context, false);
+    }
+
     public static String getAuthToken(Context context) {
         return getAuthToken(context, true);
     }
 
-    public static String getAuthToken(Context context, boolean createIfMissing) {
-        if (INSTANCE.mAuthToken == null && createIfMissing) {
+    private static String getAuthToken(Context context, boolean createIfMissing) {
+        if (INSTANCE.mAuthToken == null) {
             AccountManager accountManager = AccountManager.get(context);
             Account[] accounts = accountManager.getAccountsByType(ACCOUNT_TYPE);
-            for (Account account : accounts) {
-                try {
-                    INSTANCE.mAuthToken = accountManager.blockingGetAuthToken(account, null, true);
-                    break;
-                } catch (OperationCanceledException e) {
-                    e.printStackTrace();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                } catch (AuthenticatorException e) {
-                    e.printStackTrace();
-                }
+            if (accounts.length > 0) {
+                INSTANCE.mAuthToken = accountManager.peekAuthToken(accounts[0], Kepce.AUTH_TOKEN_TYPE);
             }
         }
 

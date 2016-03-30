@@ -1,5 +1,7 @@
 package tr.com.kepce.restaurant;
 
+import android.databinding.DataBindingUtil;
+import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -11,6 +13,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
+import tr.com.kepce.BR;
 import tr.com.kepce.R;
 import tr.com.kepce.order.Order;
 
@@ -43,6 +46,7 @@ public class RestaurantsRecyclerViewAdapter
 
     @Override
     public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_restaurants_item, parent, false);
         return new ViewHolder(view);
@@ -50,15 +54,15 @@ public class RestaurantsRecyclerViewAdapter
 
     @Override
     public void onBindViewHolder(final ViewHolder holder, int position) {
-        holder.mItem = mValues.get(position);
-        holder.mNameView.setText(mValues.get(position).getName());
-        holder.mDistanceView.setText(mValues.get(position).getCo2e().toString());
+        final Restaurant restaurant = mValues.get(position);
+        holder.getBinding().setVariable(BR.restaurant, restaurant);
+        holder.getBinding().executePendingBindings();
 
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 if (mListener != null) {
-                    mListener.onRestaurantSelected(holder.mItem);
+                    mListener.onRestaurantSelected(restaurant);
                 }
             }
         });
@@ -71,19 +75,15 @@ public class RestaurantsRecyclerViewAdapter
 
     public class ViewHolder extends RecyclerView.ViewHolder {
 
-        public final TextView mNameView;
-        public final TextView mDistanceView;
-        public Restaurant mItem;
+        public final ViewDataBinding mBinding;
 
         public ViewHolder(View view) {
             super(view);
-            mNameView = (TextView) view.findViewById(R.id.name);
-            mDistanceView = (TextView) view.findViewById(R.id.distance);
+            mBinding = DataBindingUtil.bind(view);
         }
 
-        @Override
-        public String toString() {
-            return super.toString() + " '" + mNameView.getText() + "'";
+        public ViewDataBinding getBinding() {
+            return mBinding;
         }
     }
 }

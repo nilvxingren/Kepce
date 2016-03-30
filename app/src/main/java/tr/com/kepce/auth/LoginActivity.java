@@ -1,5 +1,7 @@
-package tr.com.kepce;
+package tr.com.kepce.auth;
 
+import android.accounts.Account;
+import android.accounts.AccountAuthenticatorResponse;
 import android.accounts.AccountManager;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -15,7 +17,6 @@ import android.content.CursorLoader;
 import android.content.Loader;
 import android.database.Cursor;
 import android.net.Uri;
-import android.os.AsyncTask;
 
 import android.os.Build;
 import android.os.Bundle;
@@ -32,33 +33,56 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.greenrobot.eventbus.EventBus;
+import org.greenrobot.eventbus.Subscribe;
+import org.greenrobot.eventbus.ThreadMode;
+
 import java.util.ArrayList;
 import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import tr.com.kepce.R;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.common.KepceResponse;
 import tr.com.kepce.profile.User;
 
 import static android.Manifest.permission.READ_CONTACTS;
 
-public class RegisterActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<Cursor> {
+
+    public static final String ARG_ADDING_NEW_ACCOUNT = "adding_new_account";
+    private static final String KEY_REQUESTED = "requested";
 
     private static final int REQUEST_READ_CONTACTS = 0;
+    private static final int REQUEST_REGISTER = 1;
 
     private AutoCompleteTextView mEmailView;
     private EditText mPasswordView;
     private View mProgressView;
     private View mLoginFormView;
+    private boolean mRequested;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_register);
+        mAccountAuthenticatorResponse =
+                getIntent().getParcelableExtra(AccountManager.KEY_ACCOUNT_AUTHENTICATOR_RESPONSE);
+        if (mAccountAuthenticatorResponse != null) {
+            mAccountAuthenticatorResponse.onRequestContinued();
+        }
+
+        setContentView(R.layout.activity_login);
+        if (savedInstanceState != null) {
+            mRequested = savedInstanceState.getBoolean(KEY_REQUESTED);
+        }
 
         mEmailView = (AutoCompleteTextView) findViewById(R.id.email);
+        String accountName = getIntent().getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+        if (!TextUtils.isEmpty(accountName)) {
+            mEmailView.setText(accountName);
+        }
         populateAutoComplete();
 
         mPasswordView = (EditText) findViewById(R.id.password);
@@ -82,8 +106,41 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             }
         });
 
+        Button registerButton = (Button) findViewById(R.id.register_button);
+        assert registerButton != null;
+        registerButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
+                registerIntent.putExtras(getIntent().getExtras());
+                startActivityForResult(registerIntent, REQUEST_REGISTER);
+            }
+        });
+
         mLoginFormView = findViewById(R.id.login_form);
         mProgressView = findViewById(R.id.login_progress);
+
+        if (mRequested) {
+            showProgress(true);
+        }
+    }
+
+    @Override
+    protected void onStart() {
+        super.onStart();
+        EventBus.getDefault().register(this);
+    }
+
+    @Override
+    protected void onStop() {
+        super.onStop();
+        EventBus.getDefault().unregister(this);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+        outState.putBoolean(KEY_REQUESTED, mRequested);
     }
 
     private void populateAutoComplete() {
@@ -164,29 +221,7 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
             // Show a progress spinner, and kick off a background task to
             // perform the user login attempt.
             showProgress(true);
-
-            Kepce.getService().register(new User(email, password)).enqueue(new Callback<KepceResponse<User>>() {
-                @Override
-                public void onResponse(Call<KepceResponse<User>> call, Response<KepceResponse<User>> response) {
-                    if (response.body().code == 0) {
-                        Toast.makeText(RegisterActivity.this, "You are registered. Please login",
-                                Toast.LENGTH_SHORT).show();
-                        setResult(RESULT_OK);
-                        finish();
-                    } else {
-                        mPasswordView.setError(getString(R.string.error_incorrect_password));
-                        mPasswordView.requestFocus();
-                    }
-                    showProgress(false);
-                }
-
-                @Override
-                public void onFailure(Call<KepceResponse<User>> call, Throwable t) {
-                    Toast.makeText(RegisterActivity.this, t.getLocalizedMessage(),
-                            Toast.LENGTH_SHORT).show();
-                    showProgress(false);
-                }
-            });
+            loadData(new User(email, password));
         }
     }
 
@@ -195,29 +230,29 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 7;
+        return password.length() > 1;
     }
 
     private void showProgress(final boolean show) {
-            int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
+        int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
-            mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-            mLoginFormView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
-                }
-            });
+        mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+        mLoginFormView.animate().setDuration(shortAnimTime).alpha(
+                show ? 0 : 1).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mLoginFormView.setVisibility(show ? View.GONE : View.VISIBLE);
+            }
+        });
 
-            mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-            mProgressView.animate().setDuration(shortAnimTime).alpha(
-                    show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
-                @Override
-                public void onAnimationEnd(Animator animation) {
-                    mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
-                }
-            });
+        mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mProgressView.animate().setDuration(shortAnimTime).alpha(
+                show ? 1 : 0).setListener(new AnimatorListenerAdapter() {
+            @Override
+            public void onAnimationEnd(Animator animation) {
+                mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
+            }
+        });
     }
 
     @Override
@@ -256,10 +291,32 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
     private void addEmailsToAutoComplete(List<String> emailAddressCollection) {
         //Create adapter to tell the AutoCompleteTextView what to show in its dropdown list.
         ArrayAdapter<String> adapter =
-                new ArrayAdapter<>(RegisterActivity.this,
+                new ArrayAdapter<>(LoginActivity.this,
                         android.R.layout.simple_dropdown_item_1line, emailAddressCollection);
 
         mEmailView.setAdapter(adapter);
+    }
+
+    private void finish(Intent intent) {
+        AccountManager accountManager = AccountManager.get(this);
+        String accountName = intent.getStringExtra(AccountManager.KEY_ACCOUNT_NAME);
+        Account account = new Account(accountName, Kepce.ACCOUNT_TYPE);
+        accountManager.addAccountExplicitly(account, null, null);
+        String authtoken = intent.getStringExtra(AccountManager.KEY_AUTHTOKEN);
+        accountManager.setAuthToken(account, Kepce.AUTH_TOKEN_TYPE, authtoken);
+
+        setAccountAuthenticatorResult(intent.getExtras());
+        setResult(RESULT_OK, intent);
+        finish();
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_REGISTER && resultCode == RESULT_OK) {
+            // TODO finish(data);
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private interface ProfileQuery {
@@ -272,10 +329,76 @@ public class RegisterActivity extends AppCompatActivity implements LoaderCallbac
         int IS_PRIMARY = 1;
     }
 
-    @Override
-    public void onBackPressed() {
-        setResult(RESULT_CANCELED);
-        super.onBackPressed();
+    private void loadData(final User user) {
+        if (mRequested) {
+            return;
+        }
+        mRequested = true;
+        Kepce.getService().login(user).enqueue(new Callback<KepceResponse<String>>() {
+            @Override
+            public void onResponse(Call<KepceResponse<String>> call, Response<KepceResponse<String>> response) {
+                EventBus.getDefault().postSticky(new LoginEvent(user.getEmail(), response.body()));
+            }
+
+            @Override
+            public void onFailure(Call<KepceResponse<String>> call, Throwable t) {
+                Toast.makeText(LoginActivity.this, t.getLocalizedMessage(),
+                        Toast.LENGTH_SHORT).show();
+                showProgress(false);
+            }
+        });
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onLogin(LoginEvent event) {
+        if (event.getResponse().code == 0) {
+            Bundle data = new Bundle();
+            data.putString(AccountManager.KEY_ACCOUNT_NAME, event.getEmail());
+            data.putString(AccountManager.KEY_ACCOUNT_TYPE, Kepce.ACCOUNT_TYPE);
+            data.putString(AccountManager.KEY_AUTHTOKEN, event.getResponse().data);
+
+            Intent intent = new Intent();
+            intent.putExtras(data);
+            finish(intent);
+        } else {
+            mPasswordView.setError(getString(R.string.error_incorrect_password));
+            mPasswordView.requestFocus();
+            mRequested = false;
+        }
+        showProgress(false);
+    }
+
+    // AccountAuthenticatorActivity
+
+    private AccountAuthenticatorResponse mAccountAuthenticatorResponse = null;
+    private Bundle mResultBundle = null;
+
+    /**
+     * Set the result that is to be sent as the result of the request that caused this
+     * Activity to be launched. If result is null or this method is never called then
+     * the request will be canceled.
+     *
+     * @param result this is returned as the result of the AbstractAccountAuthenticator request
+     */
+    public final void setAccountAuthenticatorResult(Bundle result) {
+        mResultBundle = result;
+    }
+
+    /**
+     * Sends the result or a Constants.ERROR_CODE_CANCELED error if a result isn't present.
+     */
+    public void finish() {
+        if (mAccountAuthenticatorResponse != null) {
+            // send the result bundle back if set, otherwise send an error.
+            if (mResultBundle != null) {
+                mAccountAuthenticatorResponse.onResult(mResultBundle);
+            } else {
+                mAccountAuthenticatorResponse.onError(AccountManager.ERROR_CODE_CANCELED,
+                        "canceled");
+            }
+            mAccountAuthenticatorResponse = null;
+        }
+        super.finish();
     }
 }
 

@@ -1,27 +1,47 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools"
-    android:layout_width="wrap_content"
-    android:layout_height="wrap_content">
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools">
 
-    <TextView
-        android:id="@+id/name"
+    <data>
+
+        <variable
+            name="restaurant"
+            type="tr.com.kepce.restaurant.Restaurant" />
+    </data>
+
+    <android.support.v7.widget.CardView
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentLeft="true"
-        android:layout_margin="@dimen/text_margin"
-        android:layout_toLeftOf="@+id/content"
-        android:ellipsize="end"
-        android:lines="1"
-        android:textAppearance="?attr/textAppearanceListItem"
-        tools:text="Köfteci Ramiz - Balgat" />
+        android:layout_margin="8dp"
+        app:cardCornerRadius="2dp">
 
-    <TextView
-        android:id="@+id/distance"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_alignParentRight="true"
-        android:layout_margin="@dimen/text_margin"
-        android:textAppearance="?attr/textAppearanceListItem"
-        tools:text="1.2 km" />
-</RelativeLayout>
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/name"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentLeft="true"
+                android:layout_margin="@dimen/text_margin"
+                android:layout_toLeftOf="@+id/distance"
+                android:ellipsize="end"
+                android:lines="1"
+                android:text="@{restaurant.name}"
+                android:textAppearance="?attr/textAppearanceListItem"
+                tools:text="Köfteci Ramiz" />
+
+            <TextView
+                android:id="@+id/distance"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_alignParentRight="true"
+                android:layout_margin="@dimen/text_margin"
+                android:text="@{String.valueOf(restaurant.co2e)}"
+                android:textAppearance="?attr/textAppearanceListItem"
+                tools:text="1.2 km" />
+        </RelativeLayout>
+    </android.support.v7.widget.CardView>
+</layout>

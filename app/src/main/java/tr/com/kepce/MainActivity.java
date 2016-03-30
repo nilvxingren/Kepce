@@ -1,5 +1,6 @@
 package tr.com.kepce;
 
+import android.accounts.AccountManager;
 import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
@@ -20,6 +21,8 @@ import com.google.android.gms.common.api.GoogleApiClient;
 
 import tr.com.kepce.address.Address;
 import tr.com.kepce.address.AddressesFragment;
+import tr.com.kepce.auth.LoginActivity;
+import tr.com.kepce.auth.RegisterActivity;
 import tr.com.kepce.cart.CartEntity;
 import tr.com.kepce.cart.CartFragment;
 import tr.com.kepce.common.Kepce;
@@ -114,7 +117,7 @@ public class MainActivity extends AppCompatActivity
         View userInfoView = mNavigationView.getHeaderView(0);
         View loginView = mNavigationView.getHeaderView(1);
 
-        if (Kepce.getAuthToken(this, false) != null) {
+        if (Kepce.peekAuthToken(this) != null) {
             //TextView emailTextView = (TextView) userInfoView.findViewById(R.id.textView);
             //emailTextView.setText(accounts[0].name);
             userInfoView.setVisibility(View.VISIBLE);

@@ -28,4 +28,17 @@
         completions."
     </string>
     <string name="title_activity_login">Sign in</string>
+
+    <string name="profile_firstname">First name</string>
+    <string name="profile_lastname">Last name</string>
+    <string name="profile_gender">Gender</string>
+    <string name="profile_phonenumber">Phone Number</string>
+    <string name="profile_birthday">Birthday</string>
+    <string name="profile_height">Height</string>
+    <string name="profile_weight">Weight</string>
+    <string name="profile_update">Update</string>
+
+    <string name="gender_unknown">Unknown</string>
+    <string name="gender_male">Male</string>
+    <string name="gender_female">Female</string>
 </resources>

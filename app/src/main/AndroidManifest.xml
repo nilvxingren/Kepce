@@ -28,10 +28,10 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".RegisterActivity"
+            android:name=".auth.RegisterActivity"
             android:label="@string/title_activity_register" />
         <activity
-            android:name=".LoginActivity"
+            android:name=".auth.LoginActivity"
             android:label="@string/title_activity_login" />
 
         <service
