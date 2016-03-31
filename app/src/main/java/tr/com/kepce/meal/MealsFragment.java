@@ -4,7 +4,6 @@ import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
@@ -24,8 +23,6 @@ import tr.com.kepce.R;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.common.KepceResponse;
 import tr.com.kepce.common.PagedList;
-import tr.com.kepce.restaurant.Restaurant;
-import tr.com.kepce.restaurant.RestaurantsLoadedEvent;
 
 public class MealsFragment extends Fragment {
 
@@ -143,12 +140,19 @@ public class MealsFragment extends Fragment {
             @Override
             public void onResponse(Call<KepceResponse<PagedList<Meal>>> call,
                                    Response<KepceResponse<PagedList<Meal>>> response) {
-                EventBus.getDefault().postSticky(new MealsLoadedEvent(response.body()));
+                if (response.code() == 200) {
+                    EventBus.getDefault().postSticky(new MealsLoadedEvent(response.body()));
+                } else {
+                    Toast.makeText(getContext(), "Http Error Code: " + response.code(),
+                            Toast.LENGTH_SHORT).show();
+                    showProgress(false);
+                }
             }
 
             @Override
             public void onFailure(Call<KepceResponse<PagedList<Meal>>> call, Throwable t) {
                 Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                showProgress(false);
             }
         });
     }
@@ -160,7 +164,7 @@ public class MealsFragment extends Fragment {
             mAdapter.addItems(event.getResponse().data.list);
             mAdapter.notifyDataSetChanged();
         } else {
-            Toast.makeText(getContext(), "Error Code: " + event.getResponse().code,
+            Toast.makeText(getContext(), "Server Error Code: " + event.getResponse().code,
                     Toast.LENGTH_SHORT).show();
         }
         showProgress(false);

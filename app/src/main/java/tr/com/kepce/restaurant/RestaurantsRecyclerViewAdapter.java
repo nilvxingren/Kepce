@@ -1,12 +1,9 @@
 package tr.com.kepce.restaurant;
 
-import android.databinding.DataBindingUtil;
-import android.databinding.ViewDataBinding;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -15,10 +12,10 @@ import java.util.List;
 
 import tr.com.kepce.BR;
 import tr.com.kepce.R;
-import tr.com.kepce.order.Order;
+import tr.com.kepce.common.BindingViewHolder;
 
 public class RestaurantsRecyclerViewAdapter
-        extends RecyclerView.Adapter<RestaurantsRecyclerViewAdapter.ViewHolder> {
+        extends RecyclerView.Adapter<BindingViewHolder> {
 
     private final List<Restaurant> mValues;
     private final RestaurantsFragment.OnRestaurantsFragmentInteractionListener mListener;
@@ -45,15 +42,14 @@ public class RestaurantsRecyclerViewAdapter
     }
 
     @Override
-    public ViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-
+    public BindingViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext())
                 .inflate(R.layout.fragment_restaurants_item, parent, false);
-        return new ViewHolder(view);
+        return new BindingViewHolder(view);
     }
 
     @Override
-    public void onBindViewHolder(final ViewHolder holder, int position) {
+    public void onBindViewHolder(final BindingViewHolder holder, int position) {
         final Restaurant restaurant = mValues.get(position);
         holder.getBinding().setVariable(BR.restaurant, restaurant);
         holder.getBinding().executePendingBindings();
@@ -71,19 +67,5 @@ public class RestaurantsRecyclerViewAdapter
     @Override
     public int getItemCount() {
         return mValues.size();
-    }
-
-    public class ViewHolder extends RecyclerView.ViewHolder {
-
-        public final ViewDataBinding mBinding;
-
-        public ViewHolder(View view) {
-            super(view);
-            mBinding = DataBindingUtil.bind(view);
-        }
-
-        public ViewDataBinding getBinding() {
-            return mBinding;
-        }
     }
 }

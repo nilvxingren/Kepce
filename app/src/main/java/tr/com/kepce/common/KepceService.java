@@ -4,12 +4,14 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.Body;
+import retrofit2.http.Field;
 import retrofit2.http.GET;
 import retrofit2.http.Header;
 import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import tr.com.kepce.address.Address;
+import tr.com.kepce.cart.Cart;
 import tr.com.kepce.meal.Favorite;
 import tr.com.kepce.meal.Meal;
 import tr.com.kepce.profile.User;
@@ -59,9 +61,13 @@ public interface KepceService {
     Call<KepceResponse<Favorite>> getFavorite(@Header("Authorization") String authorization,
                                               @Path("id") String id);
 
-    // param = mealId
     @POST("favorite")
-    Call<KepceResponse<Void>> addFavorite(@Header("Authorization") String authorization);
+    Call<KepceResponse<Void>> addFavorite(@Header("Authorization") String authorization,
+                                          @Field("mealId") String mealId);
+
+    @POST("favorites/delete/meal/{id}")
+    Call<KepceResponse<Void>> removeFavorite(@Header("Authorization") String authorization,
+                                          @Field("id") String mealId);
 
     @GET("me/addresses")
     Call<KepceResponse<List<Address>>> listAddresses(@Header("Authorization") String authorization);
@@ -78,4 +84,21 @@ public interface KepceService {
     @POST("me/address/delete/{id}")
     Call<KepceResponse<Void>> deleteAddress(@Header("Authorization") String authorization,
                                             @Path("id") String id);
+
+    @GET("cart")
+    Call<KepceResponse<Cart>> getCart(@Header("Authorization") String authorization);
+
+    @POST("cart")
+    Call<KepceResponse<Void>> addToCart(@Header("Authorization") String authorization,
+                                        @Field("mealId") String mealId,
+                                        @Field("quantity") Integer quantity);
+
+    @POST("cart/remove")
+    Call<KepceResponse<Void>> removeFromCart(@Header("Authorization") String authorization,
+                                        @Field("orderMealId") String mealId,
+                                        @Field("quantity") Integer quantity);
+
+    @POST("cart/empty")
+    Call<KepceResponse<Void>> clearCart(@Header("Authorization") String authorization);
+
 }

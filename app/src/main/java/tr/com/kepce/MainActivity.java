@@ -180,31 +180,31 @@ public class MainActivity extends AppCompatActivity
 
         if (id == R.id.nav_meals) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, new MealsPagerFragment())
+                    .replace(R.id.content_frame, MealsPagerFragment.newInstance())
                     .commit();
         } else if (id == R.id.nav_cart) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, new CartFragment())
+                    .replace(R.id.content_frame, CartFragment.newInstance())
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nav_restaurants) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, new RestaurantsFragment())
+                    .replace(R.id.content_frame, RestaurantsFragment.newInstance())
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nav_profile) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, new ProfileFragment())
+                    .replace(R.id.content_frame, ProfileFragment.newInstance())
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nav_addresses) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, new AddressesFragment())
+                    .replace(R.id.content_frame, AddressesFragment.newInstance())
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nav_orders) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, new OrdersFragment())
+                    .replace(R.id.content_frame, OrdersFragment.newInstance())
                     .addToBackStack(null)
                     .commit();
         }

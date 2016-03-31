@@ -17,7 +17,7 @@
 
     <android.support.v7.widget.RecyclerView
         android:id="@+id/list"
-        android:name="tr.com.kepce.fragment.RestaurantsFragment"
+        android:name="tr.com.kepce.restaurant.RestaurantsFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         app:layoutManager="LinearLayoutManager"

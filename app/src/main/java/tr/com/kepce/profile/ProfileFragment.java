@@ -3,7 +3,6 @@ package tr.com.kepce.profile;
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
 import android.content.Context;
-import android.databinding.DataBindingUtil;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -22,7 +21,6 @@ import tr.com.kepce.R;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.common.KepceResponse;
 import tr.com.kepce.databinding.FragmentProfileBinding;
-import tr.com.kepce.meal.MealsLoadedEvent;
 
 public class ProfileFragment extends Fragment {
 
@@ -149,12 +147,20 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onResponse(Call<KepceResponse<User>> call,
                                            Response<KepceResponse<User>> response) {
-                        EventBus.getDefault().postSticky(new ProfileLoadedEvent(response.body()));
+                        if (response.code() == 200) {
+                            EventBus.getDefault().postSticky(new ProfileLoadedEvent(response.body()));
+                        } else {
+                            Toast.makeText(getContext(), "Http Error Code: " + response.code(),
+                                    Toast.LENGTH_SHORT).show();
+                            showProgress(false);
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<KepceResponse<User>> call, Throwable t) {
-                        Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), t.getLocalizedMessage(),
+                                Toast.LENGTH_SHORT).show();
+                        showProgress(false);
                     }
                 });
     }
@@ -175,7 +181,7 @@ public class ProfileFragment extends Fragment {
         if (event.getResponse().code == 0) {
             mBinding.update.setEnabled(true);
         } else {
-            Toast.makeText(getContext(), "Error Code: " + event.getResponse().code,
+            Toast.makeText(getContext(), "Server Error Code: " + event.getResponse().code,
                     Toast.LENGTH_SHORT).show();
         }
     }

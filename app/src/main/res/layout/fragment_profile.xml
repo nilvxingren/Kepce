@@ -82,6 +82,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
                         android:hint="@string/profile_gender"
+                        android:lines="1"
                         android:text="@{user.gender == Gender.MALE ? @string/gender_male : user.gender == Gender.FEMALE ? @string/gender_female : @string/gender_unknown}" />
                 </android.support.design.widget.TextInputLayout>
 

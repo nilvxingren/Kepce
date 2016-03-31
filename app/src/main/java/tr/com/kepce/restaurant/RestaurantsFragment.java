@@ -23,7 +23,6 @@ import tr.com.kepce.R;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.common.KepceResponse;
 import tr.com.kepce.common.PagedList;
-import tr.com.kepce.meal.MealsLoadedEvent;
 
 public class RestaurantsFragment extends Fragment {
 
@@ -137,12 +136,20 @@ public class RestaurantsFragment extends Fragment {
                     @Override
                     public void onResponse(Call<KepceResponse<PagedList<Restaurant>>> call,
                                            Response<KepceResponse<PagedList<Restaurant>>> response) {
-                        EventBus.getDefault().postSticky(new RestaurantsLoadedEvent(response.body()));
+                        if (response.code() == 200) {
+                            EventBus.getDefault().postSticky(new RestaurantsLoadedEvent(response.body()));
+                        } else {
+                            Toast.makeText(getContext(), "Http Error Code: " + response.code(),
+                                    Toast.LENGTH_SHORT).show();
+                            showProgress(false);
+                        }
                     }
 
                     @Override
                     public void onFailure(Call<KepceResponse<PagedList<Restaurant>>> call, Throwable t) {
-                        Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
+                        Toast.makeText(getContext(), t.getLocalizedMessage(),
+                                Toast.LENGTH_SHORT).show();
+                        showProgress(false);
                     }
                 });
     }
@@ -154,7 +161,7 @@ public class RestaurantsFragment extends Fragment {
             mAdapter.addItems(event.getResponse().data.list);
             mAdapter.notifyDataSetChanged();
         } else {
-            Toast.makeText(getContext(), "Error Code: " + event.getResponse().code,
+            Toast.makeText(getContext(), "Server Error Code: " + event.getResponse().code,
                     Toast.LENGTH_SHORT).show();
         }
         showProgress(false);

@@ -1,5 +1,11 @@
 package tr.com.kepce.meal;
 
+import android.databinding.BindingAdapter;
+import android.graphics.drawable.Drawable;
+import android.net.Uri;
+import android.widget.ImageView;
+
+import com.facebook.drawee.view.SimpleDraweeView;
 import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
@@ -28,7 +34,7 @@ public class Meal {
     private String restaurantId;
     @SerializedName("restaurant")
     private Restaurant restaurant;
-    // TODO: subproducts
+    @SerializedName("submeals")
     private List<Subproduct> subproducts;
 
     public String getId() {
@@ -73,5 +79,12 @@ public class Meal {
 
     public Restaurant getRestaurant() {
         return restaurant;
+    }
+
+    @BindingAdapter("imageUrl")
+    public static void loadImage(SimpleDraweeView view, String url) {
+        if (url != null) {
+            view.setImageURI(Uri.parse(url));
+        }
     }
 }
