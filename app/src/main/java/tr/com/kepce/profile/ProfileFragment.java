@@ -104,7 +104,12 @@ public class ProfileFragment extends Fragment {
                     @Override
                     public void onResponse(Call<KepceResponse<Void>> call,
                                            Response<KepceResponse<Void>> response) {
-                        EventBus.getDefault().post(new ProfileUpdatedEvent(response.body()));
+                        if (response.code() == 200) {
+                            EventBus.getDefault().post(new ProfileUpdatedEvent(response.body()));
+                        } else {
+                            Toast.makeText(getContext(), "Http Error Code: " + response.code(),
+                                    Toast.LENGTH_SHORT).show();
+                        }
                     }
 
                     @Override

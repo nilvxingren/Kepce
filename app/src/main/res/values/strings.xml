@@ -41,4 +41,11 @@
     <string name="gender_unknown">Unknown</string>
     <string name="gender_male">Male</string>
     <string name="gender_female">Female</string>
+
+    <string name="title_activity_address">Address</string>
+    <string name="address_title">Title</string>
+    <string name="address_address">Address</string>
+    <string name="address_district">District</string>
+    <string name="address_city">City</string>
+    <string name="address_description">Description</string>
 </resources>
