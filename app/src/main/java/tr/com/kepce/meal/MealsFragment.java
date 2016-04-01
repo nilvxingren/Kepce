@@ -136,25 +136,27 @@ public class MealsFragment extends Fragment {
             return;
         }
         mRequested = true;
-        Kepce.getService().listMeals(20, 0, 0).enqueue(new Callback<KepceResponse<PagedList<Meal>>>() {
-            @Override
-            public void onResponse(Call<KepceResponse<PagedList<Meal>>> call,
-                                   Response<KepceResponse<PagedList<Meal>>> response) {
-                if (response.code() == 200) {
-                    EventBus.getDefault().postSticky(new MealsLoadedEvent(response.body()));
-                } else {
-                    Toast.makeText(getContext(), "Http Error Code: " + response.code(),
-                            Toast.LENGTH_SHORT).show();
-                    showProgress(false);
-                }
-            }
+        Kepce.getService().listMeals(Kepce.peekAuthToken(getContext()), 20, 0, 0)
+                .enqueue(new Callback<KepceResponse<PagedList<Meal>>>() {
+                    @Override
+                    public void onResponse(Call<KepceResponse<PagedList<Meal>>> call,
+                                           Response<KepceResponse<PagedList<Meal>>> response) {
+                        if (response.code() == 200) {
+                            EventBus.getDefault().postSticky(new MealsLoadedEvent(response.body()));
+                        } else {
+                            Toast.makeText(getContext(), "Http Error Code: " + response.code(),
+                                    Toast.LENGTH_SHORT).show();
+                            showProgress(false);
+                        }
+                    }
 
-            @Override
-            public void onFailure(Call<KepceResponse<PagedList<Meal>>> call, Throwable t) {
-                Toast.makeText(getContext(), t.getLocalizedMessage(), Toast.LENGTH_SHORT).show();
-                showProgress(false);
-            }
-        });
+                    @Override
+                    public void onFailure(Call<KepceResponse<PagedList<Meal>>> call, Throwable t) {
+                        Toast.makeText(getContext(), t.getLocalizedMessage(),
+                                Toast.LENGTH_SHORT).show();
+                        showProgress(false);
+                    }
+                });
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)

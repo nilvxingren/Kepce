@@ -28,7 +28,6 @@ import tr.com.kepce.profile.User;
 
 public class AddressActivity extends AppCompatActivity {
 
-    public static final String EXTRA_EDIT = "edit";
     private static final String KEY_REQUESTED = "requested";
 
     private ActivityAddressBinding mBinding;
@@ -75,17 +74,15 @@ public class AddressActivity extends AppCompatActivity {
     public void onClickSave(View view) {
         mRequested = true;
         showProgress(true);
-        view.setVisibility(View.GONE);
         Callback<KepceResponse<Void>> callback = new Callback<KepceResponse<Void>>() {
             @Override
             public void onResponse(Call<KepceResponse<Void>> call,
                                    Response<KepceResponse<Void>> response) {
                 if (response.code() == 200) {
-                    EventBus.getDefault().post(new ProfileUpdatedEvent(response.body()));
+                    EventBus.getDefault().post(new AddressSavedEvent(response.body()));
                 } else {
                     mRequested = false;
                     showProgress(false);
-                    mBinding.fab.setVisibility(View.VISIBLE);
                     Toast.makeText(AddressActivity.this, "Http Error Code: " + response.code(),
                             Toast.LENGTH_SHORT).show();
                 }
@@ -95,7 +92,6 @@ public class AddressActivity extends AppCompatActivity {
             public void onFailure(Call<KepceResponse<Void>> call, Throwable t) {
                 mRequested = false;
                 showProgress(false);
-                mBinding.fab.setVisibility(View.VISIBLE);
                 Toast.makeText(AddressActivity.this, t.getLocalizedMessage(),
                         Toast.LENGTH_SHORT).show();
             }
@@ -130,17 +126,18 @@ public class AddressActivity extends AppCompatActivity {
                 mProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
             }
         });
+
+        mBinding.fab.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
     @Subscribe(threadMode = ThreadMode.MAIN)
-    public void onProfileUpdated(ProfileUpdatedEvent event) {
+    public void onAddressSaved(AddressSavedEvent event) {
         if (event.getResponse().code == 0) {
             setResult(RESULT_OK);
             finish();
         } else {
             mRequested = false;
             showProgress(false);
-            mBinding.fab.setVisibility(View.VISIBLE);
             Toast.makeText(this, "Server Error Code: " + event.getResponse().code,
                     Toast.LENGTH_SHORT).show();
         }

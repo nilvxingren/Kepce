@@ -14,26 +14,11 @@ import tr.com.kepce.address.Address;
 import tr.com.kepce.cart.Cart;
 import tr.com.kepce.meal.Favorite;
 import tr.com.kepce.meal.Meal;
+import tr.com.kepce.order.Order;
 import tr.com.kepce.profile.User;
 import tr.com.kepce.restaurant.Restaurant;
 
 public interface KepceService {
-
-    @POST("restaurants/{count}/{page}")
-    Call<KepceResponse<PagedList<Restaurant>>> listRestaurants(@Path("count") int count,
-                                                               @Path("page") int page,
-                                                               @Query("count") int countAll);
-
-    @GET("restaurant/{id}")
-    Call<KepceResponse<Restaurant>> getRestaurant(@Path("id") String id);
-
-    @POST("meals/{count}/{page}")
-    Call<KepceResponse<PagedList<Meal>>> listMeals(@Path("count") int count,
-                                                   @Path("page") int page,
-                                                   @Query("count") int countAll);
-
-    @GET("meal/{id}")
-    Call<KepceResponse<Meal>> getMeal(@Path("id") String id);
 
     @POST("signup")
     Call<KepceResponse<User>> register(@Body User user);
@@ -51,6 +36,18 @@ public interface KepceService {
     Call<KepceResponse<Void>> updateUser(@Header("Authorization") String authorization,
                                          @Body User user);
 
+    @POST("restaurants/{count}/{page}")
+    Call<KepceResponse<PagedList<Restaurant>>> listRestaurants(@Header("Authorization") String authorization,
+                                                               @Path("count") int count,
+                                                               @Path("page") int page,
+                                                               @Query("count") int countAll);
+
+    @POST("meals/{count}/{page}")
+    Call<KepceResponse<PagedList<Meal>>> listMeals(@Header("Authorization") String authorization,
+                                                   @Path("count") int count,
+                                                   @Path("page") int page,
+                                                   @Query("count") int countAll);
+
     @POST("favorites/{count}/{page}")
     Call<KepceResponse<PagedList<Favorite>>> listFavorites(@Header("Authorization") String authorization,
                                                            @Path("count") int count,
@@ -67,7 +64,7 @@ public interface KepceService {
 
     @POST("favorites/delete/meal/{id}")
     Call<KepceResponse<Void>> removeFavorite(@Header("Authorization") String authorization,
-                                          @Field("id") String mealId);
+                                             @Field("id") String mealId);
 
     @GET("me/addresses")
     Call<KepceResponse<List<Address>>> listAddresses(@Header("Authorization") String authorization);
@@ -95,10 +92,15 @@ public interface KepceService {
 
     @POST("cart/remove")
     Call<KepceResponse<Void>> removeFromCart(@Header("Authorization") String authorization,
-                                        @Field("orderMealId") String mealId,
-                                        @Field("quantity") Integer quantity);
+                                             @Field("orderMealId") String mealId,
+                                             @Field("quantity") Integer quantity);
 
     @POST("cart/empty")
     Call<KepceResponse<Void>> clearCart(@Header("Authorization") String authorization);
 
+    @POST("orders/{count}/{page}")
+    Call<KepceResponse<PagedList<Order>>> listOrders(@Header("Authorization") String authorization,
+                                                     @Path("count") int count,
+                                                     @Path("page") int page,
+                                                     @Query("count") int countAll);
 }

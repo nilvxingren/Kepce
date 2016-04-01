@@ -131,7 +131,7 @@ public class RestaurantsFragment extends Fragment {
             return;
         }
         mRequested = true;
-        Kepce.getService().listRestaurants(20, 0, 0)
+        Kepce.getService().listRestaurants(Kepce.peekAuthToken(getContext()), 20, 0, 0)
                 .enqueue(new Callback<KepceResponse<PagedList<Restaurant>>>() {
                     @Override
                     public void onResponse(Call<KepceResponse<PagedList<Restaurant>>> call,

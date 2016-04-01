@@ -2,7 +2,9 @@ package tr.com.kepce.address;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.app.Activity;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
@@ -27,6 +29,7 @@ import tr.com.kepce.common.KepceResponse;
 
 public class AddressesFragment extends Fragment {
 
+    private static final int REQUEST_ADDRESS_EDIT = 0;
     private static final String KEY_REQUESTED = "requested";
 
     private AddressesRecyclerViewAdapter mAdapter;
@@ -52,13 +55,22 @@ public class AddressesFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_addresses, container, false);
 
+        mContentView = view.findViewById(R.id.content);
+        mProgressView = view.findViewById(R.id.progress);
+
         RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new AddressesRecyclerViewAdapter(mListener);
         recyclerView.setAdapter(mAdapter);
 
-        mContentView = recyclerView;
-        mProgressView = view.findViewById(R.id.progress);
+        View fab = view.findViewById(R.id.fab);
+        fab.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getContext(), AddressActivity.class);
+                startActivityForResult(intent, REQUEST_ADDRESS_EDIT);
+            }
+        });
 
         if (!mRequested) {
             showProgress(true);
@@ -103,6 +115,20 @@ public class AddressesFragment extends Fragment {
     public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_REQUESTED, mRequested);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == REQUEST_ADDRESS_EDIT) {
+            if (resultCode == Activity.RESULT_OK) {
+                mRequested = false;
+                showProgress(true);
+                EventBus.getDefault().removeStickyEvent(AddressesLoadedEvent.class);
+                loadData();
+            }
+        } else {
+            super.onActivityResult(requestCode, resultCode, data);
+        }
     }
 
     private void showProgress(final boolean show) {

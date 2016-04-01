@@ -2,8 +2,7 @@
 <layout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    tools:context="tr.com.kepce.address.AddressActivity"
-    tools:showIn="@layout/activity_address">
+    tools:context="tr.com.kepce.address.AddressActivity">
 
     <data>
 
@@ -45,7 +44,7 @@
                 android:visibility="gone" />
 
             <ScrollView
-                android:id="@id/content"
+                android:id="@+id/content"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
@@ -132,8 +131,8 @@
             android:layout_height="wrap_content"
             android:layout_gravity="bottom|end"
             android:layout_margin="@dimen/fab_margin"
-            android:src="@android:drawable/ic_dialog_email"
-            android:onClick="@{onClickSave}" />
+            android:onClick="onClickSave"
+            android:src="@android:drawable/ic_dialog_email" />
 
     </android.support.design.widget.CoordinatorLayout>
 </layout>
