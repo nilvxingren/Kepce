@@ -15,11 +15,25 @@
         android:layout_height="wrap_content"
         android:visibility="gone" />
 
-    <android.support.v7.widget.RecyclerView
-        android:id="@+id/list"
-        android:name="tr.com.kepce.fragment.MealsFragment"
+    <RelativeLayout
+        android:id="@+id/content"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        app:layoutManager="LinearLayoutManager"
-        tools:listitem="@layout/fragment_meals_item" />
+        android:layout_height="match_parent">
+
+        <ImageView
+            android:id="@android:id/empty"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
+            android:src="@drawable/ic_list_empty"
+            android:visibility="gone" />
+
+        <tr.com.kepce.view.EmptyRecyclerView
+            android:id="@+id/list"
+            android:name="tr.com.kepce.fragment.MealsFragment"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            app:layoutManager="LinearLayoutManager"
+            tools:listitem="@layout/fragment_meals_item" />
+    </RelativeLayout>
 </LinearLayout>

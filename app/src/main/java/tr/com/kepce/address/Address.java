@@ -2,12 +2,14 @@ package tr.com.kepce.address;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
 import tr.com.kepce.BR;
 
-public class Address extends BaseObservable {
+public class Address extends BaseObservable implements Parcelable {
 
     @SerializedName("id")
     private String id;
@@ -23,6 +25,9 @@ public class Address extends BaseObservable {
     private String address;
     @SerializedName("definition")
     private String description;
+
+    public Address() {
+    }
 
     public String getId() {
         return id;
@@ -87,4 +92,42 @@ public class Address extends BaseObservable {
         this.description = description;
         notifyPropertyChanged(BR.description);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.title);
+        dest.writeDoubleArray(this.location);
+        dest.writeString(this.city);
+        dest.writeString(this.district);
+        dest.writeString(this.address);
+        dest.writeString(this.description);
+    }
+
+    protected Address(Parcel in) {
+        this.id = in.readString();
+        this.title = in.readString();
+        this.location = in.createDoubleArray();
+        this.city = in.readString();
+        this.district = in.readString();
+        this.address = in.readString();
+        this.description = in.readString();
+    }
+
+    public static final Parcelable.Creator<Address> CREATOR = new Parcelable.Creator<Address>() {
+        @Override
+        public Address createFromParcel(Parcel source) {
+            return new Address(source);
+        }
+
+        @Override
+        public Address[] newArray(int size) {
+            return new Address[size];
+        }
+    };
 }

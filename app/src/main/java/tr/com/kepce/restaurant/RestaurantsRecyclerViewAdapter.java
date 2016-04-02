@@ -14,8 +14,7 @@ import tr.com.kepce.BR;
 import tr.com.kepce.R;
 import tr.com.kepce.common.BindingViewHolder;
 
-public class RestaurantsRecyclerViewAdapter
-        extends RecyclerView.Adapter<BindingViewHolder> {
+public class RestaurantsRecyclerViewAdapter extends RecyclerView.Adapter<BindingViewHolder> {
 
     private final List<Restaurant> mValues;
     private final RestaurantsFragment.OnRestaurantsFragmentInteractionListener mListener;
@@ -23,14 +22,6 @@ public class RestaurantsRecyclerViewAdapter
     public RestaurantsRecyclerViewAdapter(RestaurantsFragment.OnRestaurantsFragmentInteractionListener listener) {
         mValues = new ArrayList<>();
         mListener = listener;
-    }
-
-    public void addItem(Restaurant restaurant) {
-        mValues.add(restaurant);
-    }
-
-    public void addItems(Restaurant... restaurants) {
-        mValues.addAll(Arrays.asList(restaurants));
     }
 
     public void addItems(Collection<Restaurant> restaurants) {

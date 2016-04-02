@@ -2,6 +2,7 @@ package tr.com.kepce.address;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.Snackbar;
@@ -15,12 +16,17 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.io.IOException;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import tr.com.kepce.BR;
 import tr.com.kepce.R;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.common.KepceResponse;
+import tr.com.kepce.common.Locator;
 import tr.com.kepce.databinding.ActivityAddressBinding;
 import tr.com.kepce.profile.ProfileLoadedEvent;
 import tr.com.kepce.profile.ProfileUpdatedEvent;
@@ -28,6 +34,7 @@ import tr.com.kepce.profile.User;
 
 public class AddressActivity extends AppCompatActivity {
 
+    public static final String KEY_ADDRESS = "address";
     private static final String KEY_REQUESTED = "requested";
 
     private ActivityAddressBinding mBinding;
@@ -50,6 +57,26 @@ public class AddressActivity extends AppCompatActivity {
         }
         if (mRequested) {
             showProgress(true);
+        } else {
+            Address address = getIntent().getParcelableExtra(KEY_ADDRESS);
+            if (address != null) {
+                mBinding.setVariable(BR.address, address);
+            } else if (savedInstanceState == null
+                    && Locator.getInstance().getLocation() != null
+                    && Geocoder.isPresent()) {
+                // TODO location guess
+                /*
+                Geocoder geocoder = new Geocoder(this);
+                try {
+                    List<android.location.Address> addressList = geocoder.getFromLocation(
+                            Locator.getInstance().getLocation().getLatitude(),
+                            Locator.getInstance().getLocation().getLongitude(), 1);
+                    android.location.Address redAddress = addressList.get(0);
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+                */
+            }
         }
     }
 

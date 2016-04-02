@@ -1,0 +1,102 @@
+<?xml version="1.0" encoding="utf-8"?>
+<layout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context="tr.com.kepce.meal.MealActivity">
+
+    <data>
+
+        <variable
+            name="meal"
+            type="tr.com.kepce.meal.Meal" />
+
+        <variable
+            name="quantity"
+            type="int" />
+    </data>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
+
+        <com.facebook.drawee.view.SimpleDraweeView
+            android:id="@+id/image"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:adjustViewBounds="true"
+            android:background="@color/lighter_gray"
+            app:imageUrl="@{meal.photo.url}" />
+
+        <TextView
+            android:id="@+id/quantity_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_alignBaseline="@+id/quantity"
+            android:layout_toLeftOf="@+id/quantity"
+            android:text="@string/meal_quantity" />
+
+        <EditText
+            android:id="@+id/quantity"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_below="@+id/image"
+            android:inputType="number"
+            android:text="@{String.valueOf(quantity)}" />
+
+        <TextView
+            android:id="@+id/name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/quantity"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@{meal.name}"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:textStyle="bold" />
+
+        <TextView
+            android:id="@+id/restaurant_name"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:layout_below="@+id/name"
+            android:layout_marginTop="8dp"
+            android:ellipsize="end"
+            android:lines="1"
+            android:text="@{meal.restaurant.name}"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/calories"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/restaurant_name"
+            android:layout_marginTop="8dp"
+            android:text="@{String.valueOf(meal.co2e)}"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <TextView
+            android:id="@+id/carbon_footprint"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/calories"
+            android:layout_marginTop="8dp"
+            android:text="@{String.valueOf(meal.calories)}"
+            android:textAppearance="?android:attr/textAppearanceSmall" />
+
+        <Button
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_below="@+id/carbon_footprint"
+            android:onClick="onClickAdd"
+            android:text="@string/meal_add_to_cart" />
+    </RelativeLayout>
+</layout>

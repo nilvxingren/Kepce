@@ -6,7 +6,6 @@ import android.content.Context;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -23,6 +22,7 @@ import tr.com.kepce.R;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.common.KepceResponse;
 import tr.com.kepce.common.PagedList;
+import tr.com.kepce.view.EmptyRecyclerView;
 
 public class RestaurantsFragment extends Fragment {
 
@@ -51,13 +51,14 @@ public class RestaurantsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_restaurants, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        mContentView = view.findViewById(R.id.content);
+        mProgressView = view.findViewById(R.id.progress);
+
+        EmptyRecyclerView recyclerView = (EmptyRecyclerView) mContentView.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new RestaurantsRecyclerViewAdapter(mListener);
         recyclerView.setAdapter(mAdapter);
-
-        mContentView = recyclerView;
-        mProgressView = view.findViewById(R.id.progress);
+        recyclerView.setEmptyView(mContentView.findViewById(android.R.id.empty));
 
         if (!mRequested) {
             showProgress(true);
@@ -100,7 +101,7 @@ public class RestaurantsFragment extends Fragment {
 
     @Override
     public void onSaveInstanceState(Bundle outState) {
-         super.onSaveInstanceState(outState);
+        super.onSaveInstanceState(outState);
         outState.putBoolean(KEY_REQUESTED, mRequested);
     }
 
@@ -170,5 +171,7 @@ public class RestaurantsFragment extends Fragment {
     public interface OnRestaurantsFragmentInteractionListener {
 
         void onRestaurantSelected(Restaurant restaurant);
+
+        void onCartSelected();
     }
 }

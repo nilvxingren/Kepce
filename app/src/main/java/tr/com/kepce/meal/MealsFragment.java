@@ -23,6 +23,7 @@ import tr.com.kepce.R;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.common.KepceResponse;
 import tr.com.kepce.common.PagedList;
+import tr.com.kepce.view.EmptyRecyclerView;
 
 public class MealsFragment extends Fragment {
 
@@ -56,13 +57,14 @@ public class MealsFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_meals, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        mContentView = view.findViewById(R.id.content);
+        mProgressView = view.findViewById(R.id.progress);
+
+        EmptyRecyclerView recyclerView = (EmptyRecyclerView) mContentView.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new MealsRecyclerViewAdapter(mListener);
         recyclerView.setAdapter(mAdapter);
-
-        mContentView = recyclerView;
-        mProgressView = view.findViewById(R.id.progress);
+        recyclerView.setEmptyView(mContentView.findViewById(android.R.id.empty));
 
         if (!mRequested) {
             showProgress(true);
@@ -175,5 +177,7 @@ public class MealsFragment extends Fragment {
     public interface OnMealsFragmentInteractionListener {
 
         void onMealSelected(Meal meal);
+
+        void onCartSelected();
     }
 }

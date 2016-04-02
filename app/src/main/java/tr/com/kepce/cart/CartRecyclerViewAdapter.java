@@ -26,14 +26,6 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<BindingViewHol
         mListener = listener;
     }
 
-    public void addItem(CartEntity cartEntity) {
-        mValues.add(cartEntity);
-    }
-
-    public void addItems(CartEntity... cartEntities) {
-        mValues.addAll(Arrays.asList(cartEntities));
-    }
-
     public void addItems(Collection<CartEntity> restaurants) {
         mValues.addAll(restaurants);
     }

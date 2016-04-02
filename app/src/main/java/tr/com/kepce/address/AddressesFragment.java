@@ -26,6 +26,7 @@ import retrofit2.Response;
 import tr.com.kepce.R;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.common.KepceResponse;
+import tr.com.kepce.view.EmptyRecyclerView;
 
 public class AddressesFragment extends Fragment {
 
@@ -58,19 +59,11 @@ public class AddressesFragment extends Fragment {
         mContentView = view.findViewById(R.id.content);
         mProgressView = view.findViewById(R.id.progress);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        EmptyRecyclerView recyclerView = (EmptyRecyclerView) mContentView.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new AddressesRecyclerViewAdapter(mListener);
         recyclerView.setAdapter(mAdapter);
-
-        View fab = view.findViewById(R.id.fab);
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                Intent intent = new Intent(getContext(), AddressActivity.class);
-                startActivityForResult(intent, REQUEST_ADDRESS_EDIT);
-            }
-        });
+        recyclerView.setEmptyView(mContentView.findViewById(android.R.id.empty));
 
         if (!mRequested) {
             showProgress(true);

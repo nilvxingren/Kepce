@@ -7,6 +7,7 @@ import com.facebook.drawee.backends.pipeline.Fresco;
 import org.greenrobot.eventbus.EventBus;
 
 import tr.com.kepce.common.KepceEventBusIndex;
+import tr.com.kepce.common.Locator;
 
 public class KepceApplication extends Application {
 
@@ -16,5 +17,6 @@ public class KepceApplication extends Application {
         //LeakCanary.install(this);
         EventBus.builder().addIndex(new KepceEventBusIndex()).installDefaultEventBus();
         Fresco.initialize(this);
+        Locator.getInstance().start(this);
     }
 }

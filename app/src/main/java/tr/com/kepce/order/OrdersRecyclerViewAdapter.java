@@ -27,14 +27,6 @@ public class OrdersRecyclerViewAdapter extends RecyclerView.Adapter<BindingViewH
         mListener = listener;
     }
 
-    public void addItem(Order order) {
-        mValues.add(order);
-    }
-
-    public void addItems(Order... orders) {
-        mValues.addAll(Arrays.asList(orders));
-    }
-
     public void addItems(Collection<Order> orders) {
         mValues.addAll(orders);
     }

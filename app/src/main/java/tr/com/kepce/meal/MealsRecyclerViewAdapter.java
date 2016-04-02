@@ -25,14 +25,6 @@ public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<BindingViewHo
         mListener = listener;
     }
 
-    public void addItem(Meal meal) {
-        mValues.add(meal);
-    }
-
-    public void addItems(Meal... meals) {
-        mValues.addAll(Arrays.asList(meals));
-    }
-
     public void addItems(Collection<Meal> meals) {
         mValues.addAll(meals);
     }

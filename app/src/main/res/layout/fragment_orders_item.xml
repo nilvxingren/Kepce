@@ -29,7 +29,7 @@
                 android:layout_toLeftOf="@+id/distance"
                 android:ellipsize="end"
                 android:lines="1"
-                android:text="@{order.id}"
+                android:text="@{order.restaurant.name}"
                 android:textAppearance="?attr/textAppearanceListItem"
                 tools:text="123456789" />
 
@@ -39,7 +39,7 @@
                 android:layout_height="wrap_content"
                 android:layout_alignParentRight="true"
                 android:layout_margin="@dimen/text_margin"
-                android:text="@{order.date}"
+                android:text="@{@string/format_price_tl(order.price)}"
                 android:textAppearance="?attr/textAppearanceListItem"
                 tools:text="12 Şubat" />
         </RelativeLayout>

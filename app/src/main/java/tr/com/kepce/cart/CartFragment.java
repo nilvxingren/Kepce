@@ -22,6 +22,7 @@ import retrofit2.Response;
 import tr.com.kepce.R;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.common.KepceResponse;
+import tr.com.kepce.view.EmptyRecyclerView;
 
 public class CartFragment extends Fragment {
 
@@ -42,13 +43,14 @@ public class CartFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_cart, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        mContentView = view.findViewById(R.id.content);
+        mProgressView = view.findViewById(R.id.progress);
+
+        EmptyRecyclerView recyclerView = (EmptyRecyclerView) mContentView.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new CartRecyclerViewAdapter(mListener);
         recyclerView.setAdapter(mAdapter);
-
-        mContentView = recyclerView;
-        mProgressView = view.findViewById(R.id.progress);
+        recyclerView.setEmptyView(mContentView.findViewById(android.R.id.empty));
 
         if (!mRequested) {
             showProgress(true);
@@ -161,11 +163,5 @@ public class CartFragment extends Fragment {
     public interface OnCartFragmentInteractionListener {
 
         void onCartEntitySelected(CartEntity entity);
-
-        void onCartEntityModified(CartEntity entity);
-
-        void onCartEntityDeleted(CartEntity entity);
-
-        void onCartCleared();
     }
 }

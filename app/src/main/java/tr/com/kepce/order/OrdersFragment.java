@@ -26,6 +26,7 @@ import tr.com.kepce.common.PagedList;
 import tr.com.kepce.restaurant.Restaurant;
 import tr.com.kepce.restaurant.RestaurantsLoadedEvent;
 import tr.com.kepce.restaurant.RestaurantsRecyclerViewAdapter;
+import tr.com.kepce.view.EmptyRecyclerView;
 
 public class OrdersFragment extends Fragment {
 
@@ -54,18 +55,19 @@ public class OrdersFragment extends Fragment {
                              Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_orders, container, false);
 
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.list);
+        mContentView = view.findViewById(R.id.content);
+        mProgressView = view.findViewById(R.id.progress);
+
+        EmptyRecyclerView recyclerView = (EmptyRecyclerView) mContentView.findViewById(R.id.list);
         recyclerView.setLayoutManager(new LinearLayoutManager(getContext()));
         mAdapter = new OrdersRecyclerViewAdapter(mListener);
         recyclerView.setAdapter(mAdapter);
-
-        mContentView = recyclerView;
-        mProgressView = view.findViewById(R.id.progress);
+        recyclerView.setEmptyView(mContentView.findViewById(android.R.id.empty));
 
         if (!mRequested) {
             showProgress(true);
             loadData();
-        } else if (EventBus.getDefault().getStickyEvent(RestaurantsLoadedEvent.class) == null) {
+        } else if (EventBus.getDefault().getStickyEvent(OrdersLoadedEvent.class) == null) {
             showProgress(true);
         }
 

@@ -2,6 +2,8 @@ package tr.com.kepce.profile;
 
 import android.databinding.BaseObservable;
 import android.databinding.Bindable;
+import android.os.Parcel;
+import android.os.Parcelable;
 
 import com.google.gson.annotations.SerializedName;
 
@@ -9,7 +11,7 @@ import java.util.Date;
 
 import tr.com.kepce.BR;
 
-public class User extends BaseObservable {
+public class User extends BaseObservable implements Parcelable {
 
     @SerializedName("id")
     private String id;
@@ -28,9 +30,9 @@ public class User extends BaseObservable {
     @SerializedName("birthday")
     private String birthday;
     @SerializedName("weight")
-    private Integer weight;
+    private int weight;
     @SerializedName("height")
-    private Integer height;
+    private int height;
 
     public User() {
     }
@@ -82,12 +84,12 @@ public class User extends BaseObservable {
     }
 
     @Bindable
-    public Integer getWeight() {
+    public int getWeight() {
         return weight;
     }
 
     @Bindable
-    public Integer getHeight() {
+    public int getHeight() {
         return height;
     }
 
@@ -116,13 +118,58 @@ public class User extends BaseObservable {
         notifyPropertyChanged(BR.birthday);
     }
 
-    public void setWeight(Integer weight) {
+    public void setWeight(int weight) {
         this.weight = weight;
         notifyPropertyChanged(BR.weight);
     }
 
-    public void setHeight(Integer height) {
+    public void setHeight(int height) {
         this.height = height;
         notifyPropertyChanged(BR.height);
     }
+
+    @Override
+    public int describeContents() {
+        return 0;
+    }
+
+    @Override
+    public void writeToParcel(Parcel dest, int flags) {
+        dest.writeString(this.id);
+        dest.writeString(this.email);
+        dest.writeString(this.password);
+        dest.writeString(this.firstName);
+        dest.writeString(this.lastName);
+        dest.writeInt(this.gender == null ? -1 : this.gender.ordinal());
+        dest.writeString(this.phoneNumber);
+        dest.writeString(this.birthday);
+        dest.writeInt(this.weight);
+        dest.writeInt(this.height);
+    }
+
+    protected User(Parcel in) {
+        this.id = in.readString();
+        this.email = in.readString();
+        this.password = in.readString();
+        this.firstName = in.readString();
+        this.lastName = in.readString();
+        int tmpGender = in.readInt();
+        this.gender = tmpGender == -1 ? null : Gender.values()[tmpGender];
+        this.phoneNumber = in.readString();
+        this.birthday = in.readString();
+        this.weight = in.readInt();
+        this.height = in.readInt();
+    }
+
+    public static final Parcelable.Creator<User> CREATOR = new Parcelable.Creator<User>() {
+        @Override
+        public User createFromParcel(Parcel source) {
+            return new User(source);
+        }
+
+        @Override
+        public User[] newArray(int size) {
+            return new User[size];
+        }
+    };
 }

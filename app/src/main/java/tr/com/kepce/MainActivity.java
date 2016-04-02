@@ -6,6 +6,8 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
+import android.support.v4.app.FragmentManager;
+import android.support.v4.app.FragmentTransaction;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -20,6 +22,7 @@ import com.google.android.gms.appindexing.AppIndex;
 import com.google.android.gms.common.api.GoogleApiClient;
 
 import tr.com.kepce.address.Address;
+import tr.com.kepce.address.AddressActivity;
 import tr.com.kepce.address.AddressesFragment;
 import tr.com.kepce.auth.LoginActivity;
 import tr.com.kepce.auth.RegisterActivity;
@@ -27,6 +30,7 @@ import tr.com.kepce.cart.CartEntity;
 import tr.com.kepce.cart.CartFragment;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.meal.Meal;
+import tr.com.kepce.meal.MealActivity;
 import tr.com.kepce.meal.MealsFragment;
 import tr.com.kepce.meal.MealsPagerFragment;
 import tr.com.kepce.order.Order;
@@ -49,11 +53,6 @@ public class MainActivity extends AppCompatActivity
     public static final int REQUEST_REGISTER = 1;
 
     private NavigationView mNavigationView;
-    /**
-     * ATTENTION: This was auto-generated to implement the App Indexing API.
-     * See https://g.co/AppIndexing/AndroidStudio for more information.
-     */
-    private GoogleApiClient client;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,24 +61,22 @@ public class MainActivity extends AppCompatActivity
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
 
-        FloatingActionButton fab = (FloatingActionButton) findViewById(R.id.fab);
-        assert fab != null;
-        fab.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                getSupportFragmentManager().beginTransaction()
-                        .replace(R.id.content_frame, new CartFragment())
-                        .addToBackStack(null)
-                        .commit();
-            }
-        });
-
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         assert drawer != null;
         drawer.addDrawerListener(toggle);
         toggle.syncState();
+
+        getSupportFragmentManager()
+                .addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
+                    @Override
+                    public void onBackStackChanged() {
+                        getSupportActionBar()
+                                .setDisplayHomeAsUpEnabled(getSupportFragmentManager()
+                                        .getBackStackEntryCount() > 0);
+                    }
+                });
 
         mNavigationView = (NavigationView) findViewById(R.id.nav_view);
         assert mNavigationView != null;
@@ -105,12 +102,9 @@ public class MainActivity extends AppCompatActivity
 
         if (savedInstanceState == null) {
             getSupportFragmentManager().beginTransaction()
-                    .replace(R.id.content_frame, new MealsPagerFragment())
+                    .replace(R.id.content_frame, MealsPagerFragment.newInstance(), "home")
                     .commit();
         }
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client = new GoogleApiClient.Builder(this).addApi(AppIndex.API).build();
     }
 
     public void updateNavigationView() {
@@ -178,33 +172,43 @@ public class MainActivity extends AppCompatActivity
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        getSupportFragmentManager().popBackStack("home", 0);
         if (id == R.id.nav_meals) {
+            /*
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, MealsPagerFragment.newInstance())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                    .addToBackStack(null)
                     .commit();
+            */
         } else if (id == R.id.nav_cart) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, CartFragment.newInstance())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nav_restaurants) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, RestaurantsFragment.newInstance())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nav_profile) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, ProfileFragment.newInstance())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nav_addresses) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, AddressesFragment.newInstance())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nav_orders) {
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, OrdersFragment.newInstance())
+                    .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
         }
@@ -217,86 +221,34 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onAddressSelected(Address address) {
-
     }
 
     @Override
     public void onCartEntitySelected(CartEntity entity) {
-
-    }
-
-    @Override
-    public void onCartEntityModified(CartEntity entity) {
-
-    }
-
-    @Override
-    public void onCartEntityDeleted(CartEntity entity) {
-
-    }
-
-    @Override
-    public void onCartCleared() {
-
     }
 
     @Override
     public void onMealSelected(Meal meal) {
-
+        Intent intent = new Intent(this, MealActivity.class);
+        intent.putExtra(MealActivity.KEY_MEAL, meal);
+        startActivity(intent);
     }
 
     @Override
     public void onOrderSelected(Order order) {
-
-    }
-
-    @Override
-    public void onProfileSaved(User user) {
-
     }
 
     @Override
     public void onRestaurantSelected(Restaurant restaurant) {
-
     }
 
     @Override
-    public void onStart() {
-        super.onStart();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        client.connect();
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://tr.com.kepce/http/host/path")
-        );
-        AppIndex.AppIndexApi.start(client, viewAction);
-    }
-
-    @Override
-    public void onStop() {
-        super.onStop();
-
-        // ATTENTION: This was auto-generated to implement the App Indexing API.
-        // See https://g.co/AppIndexing/AndroidStudio for more information.
-        Action viewAction = Action.newAction(
-                Action.TYPE_VIEW, // TODO: choose an action type.
-                "Main Page", // TODO: Define a title for the content shown.
-                // TODO: If you have web page content that matches this app activity's content,
-                // make sure this auto-generated web page URL is correct.
-                // Otherwise, set the URL to null.
-                Uri.parse("http://host/path"),
-                // TODO: Make sure this auto-generated app URL is correct.
-                Uri.parse("android-app://tr.com.kepce/http/host/path")
-        );
-        AppIndex.AppIndexApi.end(client, viewAction);
-        client.disconnect();
+    public void onCartSelected() {
+        getSupportFragmentManager().popBackStack("home", 0);
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, CartFragment.newInstance())
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit();
     }
 }

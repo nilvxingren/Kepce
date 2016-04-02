@@ -193,6 +193,5 @@ public class ProfileFragment extends Fragment {
 
     public interface OnProfileFragmentInteractionListener {
 
-        void onProfileSaved(User user);
     }
 }

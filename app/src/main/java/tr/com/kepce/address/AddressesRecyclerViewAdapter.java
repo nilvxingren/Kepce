@@ -26,14 +26,6 @@ public class AddressesRecyclerViewAdapter
         mListener = listener;
     }
 
-    public void addItem(Address address) {
-        mValues.add(address);
-    }
-
-    public void addItems(Address... addresses) {
-        mValues.addAll(Arrays.asList(addresses));
-    }
-
     public void addItems(Collection<Address> restaurants) {
         mValues.addAll(restaurants);
     }
