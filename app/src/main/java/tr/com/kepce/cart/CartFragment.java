@@ -124,7 +124,7 @@ public class CartFragment extends Fragment {
             return;
         }
         mRequested = true;
-        Kepce.getService().getCart(Kepce.getAuthToken(getContext()))
+        Kepce.getService().getCart(Kepce.peekAuthToken(getContext()))
                 .enqueue(new Callback<KepceResponse<Cart>>() {
                     @Override
                     public void onResponse(Call<KepceResponse<Cart>> call,
@@ -161,7 +161,5 @@ public class CartFragment extends Fragment {
     }
 
     public interface OnCartFragmentInteractionListener {
-
-        void onCartEntitySelected(CartEntity entity);
     }
 }

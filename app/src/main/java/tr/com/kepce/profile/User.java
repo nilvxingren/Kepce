@@ -23,7 +23,7 @@ public class User extends BaseObservable implements Parcelable {
     private String firstName;
     @SerializedName("surname")
     private String lastName;
-    @SerializedName("gender")
+    @SerializedName("sex")
     private Gender gender;
     @SerializedName("phone")
     private String phoneNumber;

@@ -1,10 +1,9 @@
 package tr.com.kepce;
 
+import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.content.Intent;
-import android.net.Uri;
 import android.os.Bundle;
-import android.support.design.widget.FloatingActionButton;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -17,27 +16,25 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 
-import com.google.android.gms.appindexing.Action;
-import com.google.android.gms.appindexing.AppIndex;
-import com.google.android.gms.common.api.GoogleApiClient;
-
-import tr.com.kepce.address.Address;
-import tr.com.kepce.address.AddressActivity;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import tr.com.kepce.address.AddressesFragment;
 import tr.com.kepce.auth.LoginActivity;
 import tr.com.kepce.auth.RegisterActivity;
-import tr.com.kepce.cart.CartEntity;
 import tr.com.kepce.cart.CartFragment;
 import tr.com.kepce.common.Kepce;
+import tr.com.kepce.common.KepceResponse;
 import tr.com.kepce.meal.Meal;
 import tr.com.kepce.meal.MealActivity;
 import tr.com.kepce.meal.MealsFragment;
 import tr.com.kepce.meal.MealsPagerFragment;
 import tr.com.kepce.order.Order;
+import tr.com.kepce.order.OrderFragment;
 import tr.com.kepce.order.OrdersFragment;
 import tr.com.kepce.profile.ProfileFragment;
-import tr.com.kepce.profile.User;
 import tr.com.kepce.restaurant.Restaurant;
+import tr.com.kepce.restaurant.RestaurantFragment;
 import tr.com.kepce.restaurant.RestaurantsFragment;
 
 public class MainActivity extends AppCompatActivity
@@ -47,7 +44,8 @@ public class MainActivity extends AppCompatActivity
         RestaurantsFragment.OnRestaurantsFragmentInteractionListener,
         ProfileFragment.OnProfileFragmentInteractionListener,
         AddressesFragment.OnAddressesFragmentInteractionListener,
-        OrdersFragment.OnOrdersFragmentInteractionListener {
+        OrdersFragment.OnOrdersFragmentInteractionListener,
+        RestaurantFragment.OnRestaurantFragmentInteractionListener {
 
     public static final int REQUEST_LOGIN = 0;
     public static final int REQUEST_REGISTER = 1;
@@ -60,9 +58,10 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
+        final ActionBarDrawerToggle toggle = new ActionBarDrawerToggle(
                 this, drawer, toolbar, R.string.navigation_drawer_open, R.string.navigation_drawer_close);
         assert drawer != null;
         drawer.addDrawerListener(toggle);
@@ -72,9 +71,8 @@ public class MainActivity extends AppCompatActivity
                 .addOnBackStackChangedListener(new FragmentManager.OnBackStackChangedListener() {
                     @Override
                     public void onBackStackChanged() {
-                        getSupportActionBar()
-                                .setDisplayHomeAsUpEnabled(getSupportFragmentManager()
-                                        .getBackStackEntryCount() > 0);
+                        toggle.setDrawerIndicatorEnabled(
+                                getSupportFragmentManager().getBackStackEntryCount() == 0);
                     }
                 });
 
@@ -112,8 +110,6 @@ public class MainActivity extends AppCompatActivity
         View loginView = mNavigationView.getHeaderView(1);
 
         if (Kepce.peekAuthToken(this) != null) {
-            //TextView emailTextView = (TextView) userInfoView.findViewById(R.id.textView);
-            //emailTextView.setText(accounts[0].name);
             userInfoView.setVisibility(View.VISIBLE);
             loginView.setVisibility(View.GONE);
 
@@ -211,20 +207,29 @@ public class MainActivity extends AppCompatActivity
                     .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
                     .addToBackStack(null)
                     .commit();
+        } else if (id == R.id.nav_logout) {
+            final String token = Kepce.peekAuthToken(this);
+            if (token != null) {
+                Kepce.getService().logout(token)
+                        .enqueue(new Callback<KepceResponse<Void>>() {
+                            @Override
+                            public void onResponse(Call<KepceResponse<Void>> call,
+                                                   Response<KepceResponse<Void>> response) {
+                                Kepce.invalidateAuthToken(MainActivity.this);
+                                updateNavigationView();
+                            }
+
+                            @Override
+                            public void onFailure(Call<KepceResponse<Void>> call, Throwable t) {
+                            }
+                        });
+            }
         }
 
         DrawerLayout drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         assert drawer != null;
         drawer.closeDrawer(GravityCompat.START);
         return true;
-    }
-
-    @Override
-    public void onAddressSelected(Address address) {
-    }
-
-    @Override
-    public void onCartEntitySelected(CartEntity entity) {
     }
 
     @Override
@@ -236,10 +241,20 @@ public class MainActivity extends AppCompatActivity
 
     @Override
     public void onOrderSelected(Order order) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, OrderFragment.newInstance(order))
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override
     public void onRestaurantSelected(Restaurant restaurant) {
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, RestaurantFragment.newInstance(restaurant))
+                .setTransition(FragmentTransaction.TRANSIT_FRAGMENT_OPEN)
+                .addToBackStack(null)
+                .commit();
     }
 
     @Override

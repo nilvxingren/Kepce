@@ -45,15 +45,7 @@ public class CartRecyclerViewAdapter extends RecyclerView.Adapter<BindingViewHol
     public void onBindViewHolder(final BindingViewHolder holder, int position) {
         final CartEntity entity = mValues.get(position);
         holder.getBinding().setVariable(BR.cartEntity, entity);
-
-        holder.itemView.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                if (null != mListener) {
-                    mListener.onCartEntitySelected(entity);
-                }
-            }
-        });
+        holder.getBinding().executePendingBindings();
     }
 
     @Override

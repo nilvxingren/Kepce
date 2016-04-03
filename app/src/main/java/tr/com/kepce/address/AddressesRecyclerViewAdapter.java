@@ -1,5 +1,7 @@
 package tr.com.kepce.address;
 
+import android.content.Context;
+import android.content.Intent;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -15,8 +17,7 @@ import tr.com.kepce.R;
 import tr.com.kepce.address.AddressesFragment.OnAddressesFragmentInteractionListener;
 import tr.com.kepce.common.BindingViewHolder;
 
-public class AddressesRecyclerViewAdapter
-        extends RecyclerView.Adapter<BindingViewHolder> {
+public class AddressesRecyclerViewAdapter extends RecyclerView.Adapter<BindingViewHolder> {
 
     private final List<Address> mValues;
     private final OnAddressesFragmentInteractionListener mListener;
@@ -50,9 +51,10 @@ public class AddressesRecyclerViewAdapter
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (mListener != null) {
-                    mListener.onAddressSelected(address);
-                }
+                Context context = holder.itemView.getContext();
+                Intent intent = new Intent(context, AddressActivity.class);
+                intent.putExtra(AddressActivity.KEY_ADDRESS, address);
+                context.startActivity(intent);
             }
         });
     }

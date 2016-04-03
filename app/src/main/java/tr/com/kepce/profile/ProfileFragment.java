@@ -99,7 +99,7 @@ public class ProfileFragment extends Fragment {
 
     public void onClickUpdate(View view) {
         view.setEnabled(false);
-        Kepce.getService().updateUser(Kepce.getAuthToken(getContext()), mBinding.getUser())
+        Kepce.getService().updateUser(Kepce.peekAuthToken(getContext()), mBinding.getUser())
                 .enqueue(new Callback<KepceResponse<Void>>() {
                     @Override
                     public void onResponse(Call<KepceResponse<Void>> call,
@@ -147,7 +147,7 @@ public class ProfileFragment extends Fragment {
             return;
         }
         mRequested = true;
-        Kepce.getService().getUser(Kepce.getAuthToken(getContext()))
+        Kepce.getService().getUser(Kepce.peekAuthToken(getContext()))
                 .enqueue(new Callback<KepceResponse<User>>() {
                     @Override
                     public void onResponse(Call<KepceResponse<User>> call,
@@ -192,6 +192,5 @@ public class ProfileFragment extends Fragment {
     }
 
     public interface OnProfileFragmentInteractionListener {
-
     }
 }

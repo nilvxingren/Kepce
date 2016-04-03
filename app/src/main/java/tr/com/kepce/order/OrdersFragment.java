@@ -135,7 +135,7 @@ public class OrdersFragment extends Fragment {
             return;
         }
         mRequested = true;
-        Kepce.getService().listOrders(Kepce.getAuthToken(getContext()), 20, 0, 0)
+        Kepce.getService().listOrders(Kepce.peekAuthToken(getContext()), 20, 0, 0)
                 .enqueue(new Callback<KepceResponse<PagedList<Order>>>() {
                     @Override
                     public void onResponse(Call<KepceResponse<PagedList<Order>>> call,

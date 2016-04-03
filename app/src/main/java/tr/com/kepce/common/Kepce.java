@@ -2,11 +2,7 @@ package tr.com.kepce.common;
 
 import android.accounts.Account;
 import android.accounts.AccountManager;
-import android.accounts.AuthenticatorException;
-import android.accounts.OperationCanceledException;
 import android.content.Context;
-
-import java.io.IOException;
 
 import okhttp3.OkHttpClient;
 import okhttp3.logging.HttpLoggingInterceptor;
@@ -38,14 +34,6 @@ public class Kepce {
     }
 
     public static String peekAuthToken(Context context) {
-        return getAuthToken(context, false);
-    }
-
-    public static String getAuthToken(Context context) {
-        return getAuthToken(context, true);
-    }
-
-    private static String getAuthToken(Context context, boolean createIfMissing) {
         if (INSTANCE.mAuthToken == null) {
             AccountManager accountManager = AccountManager.get(context);
             Account[] accounts = accountManager.getAccountsByType(ACCOUNT_TYPE);
@@ -55,5 +43,11 @@ public class Kepce {
         }
 
         return INSTANCE.mAuthToken;
+    }
+
+    public static void invalidateAuthToken(Context context) {
+        AccountManager manager = AccountManager.get(context);
+        manager.invalidateAuthToken(Kepce.ACCOUNT_TYPE, INSTANCE.mAuthToken);
+        INSTANCE.mAuthToken = null;
     }
 }

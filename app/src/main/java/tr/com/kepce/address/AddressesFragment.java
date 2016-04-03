@@ -10,6 +10,9 @@ import android.support.v4.app.Fragment;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Toast;
@@ -49,6 +52,7 @@ public class AddressesFragment extends Fragment {
         if (savedInstanceState != null) {
             mRequested = savedInstanceState.getBoolean(KEY_REQUESTED);
         }
+        setHasOptionsMenu(true);
     }
 
     @Override
@@ -124,6 +128,21 @@ public class AddressesFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        inflater.inflate(R.menu.address, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        if (item.getItemId() == R.id.action_add) {
+            Intent intent = new Intent(getContext(), AddressActivity.class);
+            startActivityForResult(intent, REQUEST_ADDRESS_EDIT);
+            return true;
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     private void showProgress(final boolean show) {
         int shortAnimTime = getResources().getInteger(android.R.integer.config_shortAnimTime);
 
@@ -151,7 +170,7 @@ public class AddressesFragment extends Fragment {
             return;
         }
         mRequested = true;
-        Kepce.getService().listAddresses(Kepce.getAuthToken(getContext()))
+        Kepce.getService().listAddresses(Kepce.peekAuthToken(getContext()))
                 .enqueue(new Callback<KepceResponse<List<Address>>>() {
                     @Override
                     public void onResponse(Call<KepceResponse<List<Address>>> call,
@@ -188,7 +207,5 @@ public class AddressesFragment extends Fragment {
     }
 
     public interface OnAddressesFragmentInteractionListener {
-
-        void onAddressSelected(Address address);
     }
 }

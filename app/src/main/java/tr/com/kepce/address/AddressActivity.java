@@ -2,6 +2,7 @@ package tr.com.kepce.address;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
+import android.databinding.DataBindingUtil;
 import android.location.Geocoder;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
@@ -45,7 +46,7 @@ public class AddressActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mBinding = ActivityAddressBinding.inflate(getLayoutInflater());
+        mBinding = DataBindingUtil.setContentView(this, R.layout.activity_address);
         setSupportActionBar(mBinding.toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
@@ -54,29 +55,12 @@ public class AddressActivity extends AppCompatActivity {
 
         if (savedInstanceState != null) {
             mRequested = savedInstanceState.getBoolean(KEY_REQUESTED);
+        } else {
+            Address address = getIntent().getParcelableExtra(KEY_ADDRESS);
+            mBinding.setAddress(address != null ? address : new Address());
         }
         if (mRequested) {
             showProgress(true);
-        } else {
-            Address address = getIntent().getParcelableExtra(KEY_ADDRESS);
-            if (address != null) {
-                mBinding.setVariable(BR.address, address);
-            } else if (savedInstanceState == null
-                    && Locator.getInstance().getLocation() != null
-                    && Geocoder.isPresent()) {
-                // TODO location guess
-                /*
-                Geocoder geocoder = new Geocoder(this);
-                try {
-                    List<android.location.Address> addressList = geocoder.getFromLocation(
-                            Locator.getInstance().getLocation().getLatitude(),
-                            Locator.getInstance().getLocation().getLongitude(), 1);
-                    android.location.Address redAddress = addressList.get(0);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-                */
-            }
         }
     }
 
@@ -125,10 +109,10 @@ public class AddressActivity extends AppCompatActivity {
         };
         String id = mBinding.getAddress().getId();
         if (TextUtils.isEmpty(id)) {
-            Kepce.getService().addAddress(Kepce.getAuthToken(this),
+            Kepce.getService().addAddress(Kepce.peekAuthToken(this),
                     mBinding.getAddress()).enqueue(callback);
         } else {
-            Kepce.getService().editAddress(Kepce.getAuthToken(this), id,
+            Kepce.getService().editAddress(Kepce.peekAuthToken(this), id,
                     mBinding.getAddress()).enqueue(callback);
         }
     }

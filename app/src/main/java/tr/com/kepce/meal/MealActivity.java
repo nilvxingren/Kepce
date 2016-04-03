@@ -34,7 +34,7 @@ public class MealActivity extends AppCompatActivity {
 
     public void onClickAdd(View view) {
         view.setEnabled(false);
-        Kepce.getService().addToCart(Kepce.getAuthToken(this), mBinding.getMeal().getId(),
+        Kepce.getService().addToCart(Kepce.peekAuthToken(this), mBinding.getMeal().getId(),
                 mBinding.getQuantity()).enqueue(new Callback<KepceResponse<Void>>() {
             @Override
             public void onResponse(Call<KepceResponse<Void>> call,
