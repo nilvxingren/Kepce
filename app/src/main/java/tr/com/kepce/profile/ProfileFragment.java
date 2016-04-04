@@ -99,6 +99,25 @@ public class ProfileFragment extends Fragment {
 
     public void onClickUpdate(View view) {
         view.setEnabled(false);
+
+        User user = mBinding.getUser();
+        user.setFirstName(mBinding.firstname.getText().toString());
+        user.setLastName(mBinding.lastname.getText().toString());
+        try {
+            user.setGender(Gender.valueOf(mBinding.gender.getText().toString()));
+        } catch (IllegalArgumentException ex) {
+        }
+        user.setBirthday(mBinding.birthday.getText().toString());
+        user.setPhoneNumber(mBinding.phonenumber.getText().toString());
+        try {
+            user.setHeight(Integer.parseInt(mBinding.height.getText().toString()));
+        } catch (NumberFormatException ex) {
+        }
+        try {
+            user.setWeight(Integer.parseInt(mBinding.weight.getText().toString()));
+        } catch (NumberFormatException ex) {
+        }
+
         Kepce.getService().updateUser(Kepce.peekAuthToken(getContext()), mBinding.getUser())
                 .enqueue(new Callback<KepceResponse<Void>>() {
                     @Override

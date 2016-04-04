@@ -10,11 +10,11 @@
         android:id="@+id/meals_tablayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="@color/colorPrimaryDark"
         android:elevation="4dp"
-        app:tabIndicatorColor="@android:color/white"
+        app:tabIndicatorColor="@color/colorAccent"
         app:tabSelectedTextColor="@android:color/white"
-        app:tabTextColor="#aaa" />
+        app:tabTextColor="@color/lighter_gray" />
 
     <android.support.v4.view.ViewPager
         android:id="@+id/meals_pager"

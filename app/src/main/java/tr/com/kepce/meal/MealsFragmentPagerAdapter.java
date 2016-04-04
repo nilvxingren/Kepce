@@ -1,20 +1,28 @@
 package tr.com.kepce.meal;
 
+import android.content.Context;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentStatePagerAdapter;
 
+import tr.com.kepce.R;
+
 public class MealsFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
-    private static final String[] TITLES = {"Featured", "Favorites", "Nearby"};
+    private String[] mTitles;
 
-    public MealsFragmentPagerAdapter(FragmentManager fm) {
+    public MealsFragmentPagerAdapter(Context context, FragmentManager fm) {
         super(fm);
+        mTitles = new String[] {
+                context.getString(R.string.meals_featured),
+                context.getString(R.string.meals_favorites),
+                context.getString(R.string.meals_nearby)
+        };
     }
 
     @Override
     public CharSequence getPageTitle(int position) {
-        return TITLES[position];
+        return mTitles[position];
     }
 
     @Override
@@ -24,6 +32,6 @@ public class MealsFragmentPagerAdapter extends FragmentStatePagerAdapter {
 
     @Override
     public int getCount() {
-        return 3;
+        return mTitles.length;
     }
 }

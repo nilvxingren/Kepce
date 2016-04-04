@@ -107,6 +107,14 @@ public class AddressActivity extends AppCompatActivity {
                         Toast.LENGTH_SHORT).show();
             }
         };
+
+        Address address = mBinding.getAddress();
+        address.setTitle(mBinding.title.getText().toString());
+        address.setAddress(mBinding.address.getText().toString());
+        address.setDistrict(mBinding.district.getText().toString());
+        address.setCity(mBinding.city.getText().toString());
+        address.setDescription(mBinding.description.getText().toString());
+
         String id = mBinding.getAddress().getId();
         if (TextUtils.isEmpty(id)) {
             Kepce.getService().addAddress(Kepce.peekAuthToken(this),

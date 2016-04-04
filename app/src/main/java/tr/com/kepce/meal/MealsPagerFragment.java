@@ -22,7 +22,7 @@ public class MealsPagerFragment extends Fragment {
         View rootView = inflater.inflate(R.layout.fragment_meals_pager, container, false);
 
         ViewPager pager = (ViewPager) rootView.findViewById(R.id.meals_pager);
-        pager.setAdapter(new MealsFragmentPagerAdapter(getChildFragmentManager()));
+        pager.setAdapter(new MealsFragmentPagerAdapter(getContext(), getChildFragmentManager()));
 
         TabLayout tabLayout = (TabLayout) rootView.findViewById(R.id.meals_tablayout);
         tabLayout.setupWithViewPager(pager);

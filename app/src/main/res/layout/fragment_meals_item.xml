@@ -11,69 +11,110 @@
 
     <android.support.v7.widget.CardView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_margin="8dp"
-        app:cardCornerRadius="2dp">
+        android:layout_height="wrap_content">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_margin="8dp">
+            android:layout_marginBottom="2dp">
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/image"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
+                android:layout_height="@dimen/meal_image_height"
                 android:adjustViewBounds="true"
-                android:background="@color/lighter_gray"
                 app:imageUrl="@{meal.photo.url}" />
 
-            <TextView
-                android:id="@+id/name"
-                android:layout_width="wrap_content"
+            <LinearLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/image"
-                android:layout_marginTop="8dp"
-                android:layout_toLeftOf="@+id/calories"
-                android:ellipsize="end"
-                android:lines="1"
-                android:text="@{meal.name}"
-                android:textAppearance="?android:attr/textAppearanceSmall"
-                android:textStyle="bold" />
+                android:layout_alignParentTop="true"
+                android:background="@drawable/meal_item_name_bg"
+                android:orientation="vertical"
+                android:padding="8dp">
 
-            <TextView
-                android:id="@+id/restaurant_name"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentLeft="true"
-                android:layout_below="@+id/name"
-                android:layout_marginTop="8dp"
-                android:layout_toLeftOf="@+id/carbon_footprint"
-                android:ellipsize="end"
-                android:lines="1"
-                android:text="@{meal.restaurant.name}"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                <TextView
+                    android:id="@+id/name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:text="@{meal.name}"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@android:color/white"
+                    android:textStyle="bold" />
 
-            <TextView
-                android:id="@+id/calories"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/image"
-                android:layout_marginTop="8dp"
-                android:text="@{String.valueOf(meal.co2e)}"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                <TextView
+                    android:id="@+id/restaurant_name"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:ellipsize="end"
+                    android:lines="1"
+                    android:text="@{meal.restaurant.name}"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textColor="@android:color/white" />
+            </LinearLayout>
 
-            <TextView
-                android:id="@+id/carbon_footprint"
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignBottom="@+id/image"
+                android:background="@color/semitransparent_black">
+
+                <TextView
+                    android:id="@+id/price"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="8dp"
+                    android:text="@{@string/format_price_tl(meal.price)}"
+                    android:textAppearance="?android:attr/textAppearanceLarge"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="8dp"
+                    android:layout_toLeftOf="@+id/carbon_footprint"
+                    android:text="@{@string/format_distance_km(meal.restaurant.distance)}"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/carbon_footprint"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="8dp"
+                    android:layout_toLeftOf="@+id/calories"
+                    android:text="@{String.valueOf(meal.co2e)}"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:textColor="@android:color/white" />
+
+                <TextView
+                    android:id="@+id/calories"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_centerVertical="true"
+                    android:layout_margin="8dp"
+                    android:text="@{String.valueOf(meal.calories)}"
+                    android:textAppearance="?android:attr/textAppearance"
+                    android:textColor="@android:color/white" />
+            </RelativeLayout>
+
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentRight="true"
-                android:layout_below="@+id/calories"
-                android:layout_marginTop="8dp"
-                android:text="@{String.valueOf(meal.calories)}"
-                android:textAppearance="?android:attr/textAppearanceSmall" />
+                android:layout_alignBottom="@+id/image"
+                android:layout_centerHorizontal="true"
+                android:src="@drawable/ic_add_to_cart_white"
+                app:elevation="0dp" />
         </RelativeLayout>
     </android.support.v7.widget.CardView>
 </layout>
