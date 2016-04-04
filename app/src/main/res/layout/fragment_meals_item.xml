@@ -40,7 +40,7 @@
                     android:ellipsize="end"
                     android:lines="1"
                     android:text="@{meal.name}"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
                     android:textColor="@android:color/white"
                     android:textStyle="bold" />
 
@@ -48,7 +48,8 @@
                     android:id="@+id/restaurant_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
+                    android:layout_marginTop="4dp"
+                    android:layout_marginBottom="8dp"
                     android:ellipsize="end"
                     android:lines="1"
                     android:text="@{meal.restaurant.name}"
