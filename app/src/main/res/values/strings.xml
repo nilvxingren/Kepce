@@ -30,9 +30,9 @@
         completions."
     </string>
 
-    <string name="meals_featured">Sizin için</string>
-    <string name="meals_favorites">Favoriler</string>
-    <string name="meals_nearby">Yakındakiler</string>
+    <string name="meals_featured">SİZİN İÇİN</string>
+    <string name="meals_favorites">FAVORİLER</string>
+    <string name="meals_nearby">YAKINDAKİLER</string>
 
     <string name="profile_firstname">İsim</string>
     <string name="profile_lastname">Soyisim</string>

@@ -15,8 +15,7 @@
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="2dp">
+            android:layout_height="wrap_content">
 
             <com.facebook.drawee.view.SimpleDraweeView
                 android:id="@+id/image"
@@ -48,8 +47,8 @@
                     android:id="@+id/restaurant_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="4dp"
                     android:layout_marginBottom="8dp"
+                    android:layout_marginTop="4dp"
                     android:ellipsize="end"
                     android:lines="1"
                     android:text="@{meal.restaurant.name}"
@@ -79,10 +78,11 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
+                    android:drawableTop="@drawable/ic_location"
                     android:layout_margin="8dp"
                     android:layout_toLeftOf="@+id/carbon_footprint"
                     android:text="@{@string/format_distance_km(meal.restaurant.distance)}"
-                    android:textAppearance="?android:attr/textAppearance"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@android:color/white" />
 
                 <TextView
@@ -92,8 +92,9 @@
                     android:layout_centerVertical="true"
                     android:layout_margin="8dp"
                     android:layout_toLeftOf="@+id/calories"
+                    android:drawableTop="@drawable/ic_co2e"
                     android:text="@{String.valueOf(meal.co2e)}"
-                    android:textAppearance="?android:attr/textAppearance"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@android:color/white" />
 
                 <TextView
@@ -102,9 +103,10 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:background="@drawable/ic_calories"
                     android:layout_margin="8dp"
                     android:text="@{String.valueOf(meal.calories)}"
-                    android:textAppearance="?android:attr/textAppearance"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@android:color/white" />
             </RelativeLayout>
 
