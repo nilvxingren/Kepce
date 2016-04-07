@@ -209,21 +209,10 @@ public class MainActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .commit();
         } else if (id == R.id.nav_logout) {
-            final String token = Kepce.peekAuthToken(this);
+            final String token = Kepce.invalidateAuthToken(MainActivity.this);
             if (token != null) {
-                Kepce.getService().logout(token)
-                        .enqueue(new Callback<KepceResponse<Void>>() {
-                            @Override
-                            public void onResponse(Call<KepceResponse<Void>> call,
-                                                   Response<KepceResponse<Void>> response) {
-                                Kepce.invalidateAuthToken(MainActivity.this);
-                                updateNavigationView();
-                            }
-
-                            @Override
-                            public void onFailure(Call<KepceResponse<Void>> call, Throwable t) {
-                            }
-                        });
+                updateNavigationView();
+                Kepce.getService().logout(token).enqueue(null);
             }
         }
 

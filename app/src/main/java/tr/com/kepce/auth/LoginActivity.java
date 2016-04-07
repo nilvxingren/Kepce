@@ -112,7 +112,9 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             @Override
             public void onClick(View view) {
                 Intent registerIntent = new Intent(LoginActivity.this, RegisterActivity.class);
-                registerIntent.putExtras(getIntent().getExtras());
+                if (getIntent().getExtras() != null) {
+                    registerIntent.putExtras(getIntent().getExtras());
+                }
                 startActivityForResult(registerIntent, REQUEST_REGISTER);
             }
         });
@@ -230,7 +232,7 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
     }
 
     private boolean isPasswordValid(String password) {
-        return password.length() > 1;
+        return password.length() > 0;
     }
 
     private void showProgress(final boolean show) {

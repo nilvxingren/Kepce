@@ -1,6 +1,7 @@
 package tr.com.kepce.stub;
 
 import android.os.Parcel;
+import android.os.Parcelable;
 
 import tr.com.kepce.restaurant.Restaurant;
 
@@ -20,10 +21,25 @@ public class StubRestaurant extends Restaurant {
         dest.writeFloat(1f);
         dest.writeInt(0);
         dest.writeFloat(3.1f);
+
+        dest.setDataPosition(0);
+
         return dest;
     }
 
     public StubRestaurant() {
         super(getDataParcel());
     }
+
+    public static final Parcelable.Creator<StubRestaurant> CREATOR = new Parcelable.Creator<StubRestaurant>() {
+        @Override
+        public StubRestaurant createFromParcel(Parcel source) {
+            return new StubRestaurant();
+        }
+
+        @Override
+        public StubRestaurant[] newArray(int size) {
+            return new StubRestaurant[size];
+        }
+    };
 }

@@ -18,7 +18,7 @@ public class Kepce {
     public static final String AUTH_TOKEN_TYPE = "kepce";
 
     private static final Kepce INSTANCE = new Kepce();
-    private static final String BASE_URL = "http://kpc.eu-1.evennode.com/api/";
+    private static final String BASE_URL = "http://bikepce.eu-1.evennode.com/api/";
 
     private KepceService mKepceService;
     private String mAuthToken;
@@ -44,13 +44,17 @@ public class Kepce {
                 INSTANCE.mAuthToken = accountManager.peekAuthToken(accounts[0], Kepce.AUTH_TOKEN_TYPE);
             }
         }
-
         return INSTANCE.mAuthToken;
     }
 
-    public static void invalidateAuthToken(Context context) {
+    public static String invalidateAuthToken(Context context) {
+        if (INSTANCE.mAuthToken == null) {
+            return null;
+        }
+        String token = INSTANCE.mAuthToken;
         AccountManager manager = AccountManager.get(context);
-        manager.invalidateAuthToken(Kepce.ACCOUNT_TYPE, INSTANCE.mAuthToken);
+        manager.invalidateAuthToken(Kepce.ACCOUNT_TYPE, token);
         INSTANCE.mAuthToken = null;
+        return token;
     }
 }

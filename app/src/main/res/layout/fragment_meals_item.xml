@@ -78,22 +78,10 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:drawableTop="@drawable/ic_location"
-                    android:layout_margin="8dp"
-                    android:layout_toLeftOf="@+id/carbon_footprint"
-                    android:text="@{@string/format_distance_km(meal.restaurant.distance)}"
-                    android:textAppearance="?android:attr/textAppearanceSmall"
-                    android:textColor="@android:color/white" />
-
-                <TextView
-                    android:id="@+id/carbon_footprint"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_margin="8dp"
+                    android:layout_margin="4dp"
                     android:layout_toLeftOf="@+id/calories"
-                    android:drawableTop="@drawable/ic_co2e"
-                    android:text="@{String.valueOf(meal.co2e)}"
+                    android:drawableTop="@drawable/ic_location"
+                    android:text="@{@string/format_distance_km(meal.restaurant.distance)}"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@android:color/white" />
 
@@ -103,8 +91,8 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
+                    android:layout_margin="4dp"
                     android:background="@drawable/ic_calories"
-                    android:layout_margin="8dp"
                     android:text="@{String.valueOf(meal.calories)}"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@android:color/white" />
