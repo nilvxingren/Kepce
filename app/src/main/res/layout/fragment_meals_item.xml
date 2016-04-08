@@ -22,9 +22,9 @@
                 android:layout_width="match_parent"
                 android:layout_height="@dimen/meal_image_height"
                 android:adjustViewBounds="true"
-                app:imageUrl="@{meal.photo.url}" />
+                app:imageUrl="@{meal.photo.thumbnailUrl}" />
 
-            <LinearLayout
+            <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_alignParentTop="true"
@@ -36,6 +36,8 @@
                     android:id="@+id/name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_toLeftOf="@+id/info"
                     android:ellipsize="end"
                     android:lines="1"
                     android:text="@{meal.name}"
@@ -47,14 +49,35 @@
                     android:id="@+id/restaurant_name"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_alignParentLeft="true"
+                    android:layout_below="@+id/name"
                     android:layout_marginBottom="8dp"
                     android:layout_marginTop="4dp"
+                    android:layout_toLeftOf="@+id/info"
                     android:ellipsize="end"
                     android:lines="1"
                     android:text="@{meal.restaurant.name}"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@android:color/white" />
-            </LinearLayout>
+
+                <ImageButton
+                    android:id="@+id/info"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_margin="8dp"
+                    android:layout_toLeftOf="@+id/favorite"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:src="@drawable/ic_info_outline_white_24dp" />
+
+                <ImageButton
+                    android:id="@+id/favorite"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentRight="true"
+                    android:layout_margin="8dp"
+                    android:background="?android:attr/selectableItemBackground"
+                    android:src="@{meal.isFavorite ? @drawable/ic_favorite_white_24dp : @drawable/ic_favorite_border_white_24dp}" />
+            </RelativeLayout>
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -78,9 +101,9 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
-                    android:layout_margin="4dp"
+                    android:layout_marginRight="8dp"
                     android:layout_toLeftOf="@+id/calories"
-                    android:drawableTop="@drawable/ic_location"
+                    android:drawableLeft="@drawable/ic_location"
                     android:text="@{@string/format_distance_km(meal.restaurant.distance)}"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@android:color/white" />
@@ -91,8 +114,9 @@
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
                     android:layout_centerVertical="true"
-                    android:layout_margin="4dp"
+                    android:layout_margin="8dp"
                     android:background="@drawable/ic_calories"
+                    android:gravity="center"
                     android:text="@{String.valueOf(meal.calories)}"
                     android:textAppearance="?android:attr/textAppearanceSmall"
                     android:textColor="@android:color/white" />

@@ -56,7 +56,7 @@ public class MainActivity extends AppCompatActivity
         setContentView(R.layout.activity_main);
         Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
         assert toolbar != null;
-        toolbar.setLogo(R.drawable.ic_logo);
+        toolbar.setLogo(R.drawable.ic_logo2);
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setDisplayShowTitleEnabled(false);
@@ -168,6 +168,10 @@ public class MainActivity extends AppCompatActivity
     @Override
     public boolean onNavigationItemSelected(MenuItem item) {
         int id = item.getItemId();
+        if (id == android.R.id.home) {
+            onBackPressed();
+            return true;
+        }
 
         getSupportFragmentManager().popBackStack("home", 0);
         if (id == R.id.nav_meals) {
@@ -212,7 +216,16 @@ public class MainActivity extends AppCompatActivity
             final String token = Kepce.invalidateAuthToken(MainActivity.this);
             if (token != null) {
                 updateNavigationView();
-                Kepce.getService().logout(token).enqueue(null);
+                Kepce.getService().logout(token).enqueue(new Callback<KepceResponse<Void>>() {
+                    @Override
+                    public void onResponse(Call<KepceResponse<Void>> call,
+                                           Response<KepceResponse<Void>> response) {
+                    }
+
+                    @Override
+                    public void onFailure(Call<KepceResponse<Void>> call, Throwable t) {
+                    }
+                });
             }
         }
 

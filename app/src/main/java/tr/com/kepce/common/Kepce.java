@@ -18,7 +18,8 @@ public class Kepce {
     public static final String AUTH_TOKEN_TYPE = "kepce";
 
     private static final Kepce INSTANCE = new Kepce();
-    private static final String BASE_URL = "http://bikepce.eu-1.evennode.com/api/";
+    public static final String BASE_URL = "http://bikepce.eu-1.evennode.com/api/";
+    public static final String IMAGE_BASE_URL = "http://bikepce.eu-1.evennode.com";
 
     private KepceService mKepceService;
     private String mAuthToken;

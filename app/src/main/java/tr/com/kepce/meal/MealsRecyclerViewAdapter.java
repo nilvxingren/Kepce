@@ -6,7 +6,6 @@ import android.view.View;
 import android.view.ViewGroup;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.List;
 
@@ -15,7 +14,6 @@ import tr.com.kepce.BuildConfig;
 import tr.com.kepce.R;
 import tr.com.kepce.common.BindingViewHolder;
 import tr.com.kepce.meal.MealsFragment.OnMealsFragmentInteractionListener;
-import tr.com.kepce.stub.StubMeal;
 
 public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<BindingViewHolder> {
 
@@ -33,10 +31,6 @@ public class MealsRecyclerViewAdapter extends RecyclerView.Adapter<BindingViewHo
 
     public void clearItems() {
         mValues.clear();
-        if (BuildConfig.DEBUG) {
-            mValues.add(new StubMeal());
-            mValues.add(new StubMeal());
-        }
     }
 
     @Override

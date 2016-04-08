@@ -4,5 +4,5 @@
     <color name="colorPrimaryDark">#280b0a</color>
     <color name="colorAccent">#fc7c0a</color>
     <color name="lighter_gray">#aba5a5</color>
-    <color name="semitransparent_black">#50000000</color>
+    <color name="semitransparent_black">#88000000</color>
 </resources>

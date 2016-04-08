@@ -25,7 +25,7 @@ public class Restaurant implements Parcelable {
     @SerializedName("kmAmount")
     private float minPricePerKm;
     @SerializedName("type")
-    private int type;
+    private String type;
     @SerializedName("carbonFootprint")
     private float co2e;
 
@@ -60,7 +60,7 @@ public class Restaurant implements Parcelable {
         return minPricePerKm;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 
@@ -95,7 +95,7 @@ public class Restaurant implements Parcelable {
         dest.writeString(this.phoneNumber);
         dest.writeFloat(this.minPriceForDelivery);
         dest.writeFloat(this.minPricePerKm);
-        dest.writeInt(this.type);
+        dest.writeString(this.type);
         dest.writeFloat(this.co2e);
     }
 
@@ -107,7 +107,7 @@ public class Restaurant implements Parcelable {
         this.phoneNumber = in.readString();
         this.minPriceForDelivery = in.readFloat();
         this.minPricePerKm = in.readFloat();
-        this.type = in.readInt();
+        this.type = in.readString();
         this.co2e = in.readFloat();
     }
 

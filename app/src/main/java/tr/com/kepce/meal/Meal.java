@@ -12,6 +12,7 @@ import com.google.gson.annotations.SerializedName;
 
 import java.util.List;
 
+import tr.com.kepce.common.Kepce;
 import tr.com.kepce.restaurant.Restaurant;
 
 public class Meal implements Parcelable {
@@ -21,7 +22,7 @@ public class Meal implements Parcelable {
     @SerializedName("name")
     private String name;
     @SerializedName("category")
-    private int category;
+    private String category;
     @SerializedName("price")
     private float price;
     @SerializedName("calorie")
@@ -49,7 +50,7 @@ public class Meal implements Parcelable {
         return name;
     }
 
-    public int getCategory() {
+    public String getCategory() {
         return category;
     }
 
@@ -85,14 +86,14 @@ public class Meal implements Parcelable {
         return restaurant;
     }
 
-    public boolean getFavorite() {
+    public boolean isFavorite() {
         return favorite;
     }
 
     @BindingAdapter("imageUrl")
     public static void loadImage(SimpleDraweeView view, String url) {
         if (url != null) {
-            view.setImageURI(Uri.parse(url));
+            view.setImageURI(Uri.parse(Kepce.IMAGE_BASE_URL + url));
         }
     }
 
@@ -105,16 +106,16 @@ public class Meal implements Parcelable {
     public void writeToParcel(Parcel dest, int flags) {
         dest.writeString(this.id);
         dest.writeString(this.name);
-        dest.writeInt(this.category);
+        dest.writeString(this.category);
         dest.writeFloat(this.price);
         dest.writeInt(this.calories);
         dest.writeFloat(this.co2e);
-        dest.writeParcelable(this.photo, flags);
         dest.writeByte(available ? (byte) 1 : (byte) 0);
         dest.writeString(this.restaurantId);
-        dest.writeParcelable(this.restaurant, flags);
-        dest.writeTypedList(subproducts);
         dest.writeByte(favorite ? (byte) 1 : (byte) 0);
+        dest.writeTypedList(subproducts);
+        dest.writeParcelable(this.photo, flags);
+        dest.writeParcelable(this.restaurant, flags);
     }
 
     public Meal() {
@@ -123,16 +124,16 @@ public class Meal implements Parcelable {
     protected Meal(Parcel in) {
         this.id = in.readString();
         this.name = in.readString();
-        this.category = in.readInt();
+        this.category = in.readString();
         this.price = in.readFloat();
         this.calories = in.readInt();
         this.co2e = in.readFloat();
-        this.photo = in.readParcelable(Photo.class.getClassLoader());
         this.available = in.readByte() != 0;
         this.restaurantId = in.readString();
-        this.restaurant = in.readParcelable(Restaurant.class.getClassLoader());
-        this.subproducts = in.createTypedArrayList(Subproduct.CREATOR);
         this.favorite = in.readByte() != 0;
+        this.subproducts = in.createTypedArrayList(Subproduct.CREATOR);
+        this.photo = in.readParcelable(Photo.class.getClassLoader());
+        this.restaurant = in.readParcelable(Restaurant.class.getClassLoader());
     }
 
     public static final Parcelable.Creator<Meal> CREATOR = new Parcelable.Creator<Meal>() {
