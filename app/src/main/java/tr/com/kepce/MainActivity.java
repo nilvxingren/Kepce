@@ -2,6 +2,7 @@ package tr.com.kepce;
 
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
@@ -23,6 +24,7 @@ import tr.com.kepce.auth.RegisterActivity;
 import tr.com.kepce.cart.CartFragment;
 import tr.com.kepce.common.Kepce;
 import tr.com.kepce.common.KepceResponse;
+import tr.com.kepce.common.Locator;
 import tr.com.kepce.meal.Meal;
 import tr.com.kepce.meal.MealActivity;
 import tr.com.kepce.meal.MealsFragment;
@@ -100,6 +102,7 @@ public class MainActivity extends AppCompatActivity
         updateNavigationView();
 
         if (savedInstanceState == null) {
+            Locator.getInstance().start(this);
             getSupportFragmentManager().beginTransaction()
                     .replace(R.id.content_frame, MealsPagerFragment.newInstance(), "home")
                     .commit();
@@ -163,6 +166,13 @@ public class MainActivity extends AppCompatActivity
             return true;
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions,
+                                           @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+        Locator.getInstance().onRequestPermissionsResult(requestCode, permissions, grantResults);
     }
 
     @Override
