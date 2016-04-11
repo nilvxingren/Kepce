@@ -16,6 +16,9 @@ import org.greenrobot.eventbus.EventBus;
 import org.greenrobot.eventbus.Subscribe;
 import org.greenrobot.eventbus.ThreadMode;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -26,6 +29,10 @@ import tr.com.kepce.common.PagedList;
 import tr.com.kepce.view.EmptyRecyclerView;
 
 public class MealsFragment extends Fragment {
+
+    public static final int TYPE_NORMAL = 0;
+    public static final int TYPE_FAVORITE = 1;
+    public static final int TYPE_NEARBY = 2;
 
     private static final String KEY_TYPE = "type";
     private static final String KEY_REQUESTED = "requested";
@@ -69,7 +76,8 @@ public class MealsFragment extends Fragment {
         if (!mRequested) {
             showProgress(true);
             loadData();
-        } else if (EventBus.getDefault().getStickyEvent(MealsLoadedEvent.class) == null) {
+        } else if (EventBus.getDefault().getStickyEvent(MealsLoadedEvent.class) == null
+                && EventBus.getDefault().getStickyEvent(FavoritesLoadedEvent.class) == null) {
             showProgress(true);
         }
 
@@ -138,31 +146,123 @@ public class MealsFragment extends Fragment {
             return;
         }
         mRequested = true;
-        Kepce.getService().listMeals(Kepce.peekAuthToken(getContext()), 20, 0, 0)
-                .enqueue(new Callback<KepceResponse<PagedList<Meal>>>() {
-                    @Override
-                    public void onResponse(Call<KepceResponse<PagedList<Meal>>> call,
-                                           Response<KepceResponse<PagedList<Meal>>> response) {
-                        if (response.code() == 200) {
-                            EventBus.getDefault().postSticky(new MealsLoadedEvent(response.body()));
-                        } else {
-                            Toast.makeText(getContext(), "Http Error Code: " + response.code(),
-                                    Toast.LENGTH_SHORT).show();
-                            showProgress(false);
-                        }
-                    }
+        switch (getArguments().getInt(KEY_TYPE, TYPE_NORMAL)) {
+            case TYPE_FAVORITE: {
+                Kepce.getService().listFavorites(Kepce.peekAuthToken(getContext()))
+                        .enqueue(new Callback<KepceResponse<List<Favorite>>>() {
+                            @Override
+                            public void onResponse(Call<KepceResponse<List<Favorite>>> call,
+                                                   Response<KepceResponse<List<Favorite>>> response) {
+                                if (response.code() == 200) {
+                                    EventBus.getDefault().postSticky(new FavoritesLoadedEvent(response.body()));
+                                } else {
+                                    Toast.makeText(getContext(), "Http Error Code: " + response.code(),
+                                            Toast.LENGTH_SHORT).show();
+                                    showProgress(false);
+                                }
+                            }
 
-                    @Override
-                    public void onFailure(Call<KepceResponse<PagedList<Meal>>> call, Throwable t) {
-                        Toast.makeText(getContext(), t.getLocalizedMessage(),
-                                Toast.LENGTH_SHORT).show();
-                        showProgress(false);
-                    }
-                });
+                            @Override
+                            public void onFailure(Call<KepceResponse<List<Favorite>>> call, Throwable t) {
+                                Toast.makeText(getContext(), t.getLocalizedMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                                showProgress(false);
+                            }
+                        });
+            }
+            break;
+            case TYPE_NEARBY: {
+                Kepce.getService().filterMeals(Kepce.peekAuthToken(getContext()), 20, 0, 0, 0, 0, Float.MAX_VALUE)
+                        .enqueue(new Callback<KepceResponse<PagedList<Meal>>>() {
+                            @Override
+                            public void onResponse(Call<KepceResponse<PagedList<Meal>>> call,
+                                                   Response<KepceResponse<PagedList<Meal>>> response) {
+                                if (response.code() == 200) {
+                                    EventBus.getDefault().postSticky(new NearbyLoadedEvent(response.body()));
+                                } else {
+                                    Toast.makeText(getContext(), "Http Error Code: " + response.code(),
+                                            Toast.LENGTH_SHORT).show();
+                                    showProgress(false);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<KepceResponse<PagedList<Meal>>> call, Throwable t) {
+                                Toast.makeText(getContext(), t.getLocalizedMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                                showProgress(false);
+                            }
+                        });
+            }
+            break;
+            default: {
+                Kepce.getService().listMeals(Kepce.peekAuthToken(getContext()), 20, 0, 0)
+                        .enqueue(new Callback<KepceResponse<PagedList<Meal>>>() {
+                            @Override
+                            public void onResponse(Call<KepceResponse<PagedList<Meal>>> call,
+                                                   Response<KepceResponse<PagedList<Meal>>> response) {
+                                if (response.code() == 200) {
+                                    EventBus.getDefault().postSticky(new MealsLoadedEvent(response.body()));
+                                } else {
+                                    Toast.makeText(getContext(), "Http Error Code: " + response.code(),
+                                            Toast.LENGTH_SHORT).show();
+                                    showProgress(false);
+                                }
+                            }
+
+                            @Override
+                            public void onFailure(Call<KepceResponse<PagedList<Meal>>> call, Throwable t) {
+                                Toast.makeText(getContext(), t.getLocalizedMessage(),
+                                        Toast.LENGTH_SHORT).show();
+                                showProgress(false);
+                            }
+                        });
+            }
+            break;
+        }
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onFavoritesLoaded(FavoritesLoadedEvent event) {
+        if (getArguments().getInt(KEY_TYPE, TYPE_NORMAL) != TYPE_FAVORITE) {
+            return;
+        }
+        if (event.getResponse().code == 0) {
+            mAdapter.clearItems();
+            List<Meal> meals = new ArrayList<>(event.getResponse().data.size());
+            for (Favorite favorite : event.getResponse().data) {
+                meals.add(favorite.getMeal());
+            }
+            mAdapter.addItems(meals);
+            mAdapter.notifyDataSetChanged();
+        } else {
+            Toast.makeText(getContext(), "Server Error Code: " + event.getResponse().code,
+                    Toast.LENGTH_SHORT).show();
+        }
+        showProgress(false);
     }
 
     @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
     public void onMealsLoaded(MealsLoadedEvent event) {
+        if (getArguments().getInt(KEY_TYPE, TYPE_NORMAL) != TYPE_NORMAL) {
+            return;
+        }
+        if (event.getResponse().code == 0) {
+            mAdapter.clearItems();
+            mAdapter.addItems(event.getResponse().data.list);
+            mAdapter.notifyDataSetChanged();
+        } else {
+            Toast.makeText(getContext(), "Server Error Code: " + event.getResponse().code,
+                    Toast.LENGTH_SHORT).show();
+        }
+        showProgress(false);
+    }
+
+    @Subscribe(sticky = true, threadMode = ThreadMode.MAIN)
+    public void onNearbyLoaded(NearbyLoadedEvent event) {
+        if (getArguments().getInt(KEY_TYPE, TYPE_NORMAL) != TYPE_NEARBY) {
+            return;
+        }
         if (event.getResponse().code == 0) {
             mAdapter.clearItems();
             mAdapter.addItems(event.getResponse().data.list);

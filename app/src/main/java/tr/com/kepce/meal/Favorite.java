@@ -8,4 +8,8 @@ public class Favorite {
     private String id;
     @SerializedName("meal")
     private Meal meal;
+
+    public Meal getMeal() {
+        return meal;
+    }
 }

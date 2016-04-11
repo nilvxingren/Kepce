@@ -49,11 +49,17 @@ public interface KepceService {
                                                    @Path("page") int page,
                                                    @Query("count") int countAll);
 
-    @POST("favorites/{count}/{page}")
-    Call<KepceResponse<PagedList<Favorite>>> listFavorites(@Header("Authorization") String authorization,
-                                                           @Path("count") int count,
-                                                           @Path("page") int page,
-                                                           @Query("count") int countAll);
+    @GET("filter/meal/{count}/{page}")
+    Call<KepceResponse<PagedList<Meal>>> filterMeals(@Header("Authorization") String authorization,
+                                                     @Path("count") int count,
+                                                     @Path("page") int page,
+                                                     @Query("count") int countAll,
+                                                     @Query("lat") double latitude,
+                                                     @Query("lon") double longitude,
+                                                     @Query("maxdist") float maxDistance);
+
+    @GET("me/favorites")
+    Call<KepceResponse<List<Favorite>>> listFavorites(@Header("Authorization") String authorization);
 
     @GET("favorite/{id}")
     Call<KepceResponse<Favorite>> getFavorite(@Header("Authorization") String authorization,
