@@ -1,11 +1,24 @@
 package tr.com.kepce.cart;
 
-import tr.com.kepce.common.KepceResponse;
-import tr.com.kepce.common.ResponseEvent;
+public class CartLoadedEvent {
 
-public class CartLoadedEvent extends ResponseEvent<Cart> {
+    private CartResponse mCartResponse;
+    private boolean mSuccessful;
 
-    public CartLoadedEvent(KepceResponse<Cart> response) {
-        super(response);
+    public CartLoadedEvent() {
+        this(null);
+    }
+
+    public CartLoadedEvent(CartResponse cartResponse) {
+        mCartResponse = cartResponse;
+        mSuccessful = cartResponse != null;
+    }
+
+    public boolean isSuccessful() {
+        return mSuccessful;
+    }
+
+    public CartResponse getCart() {
+        return mCartResponse;
     }
 }

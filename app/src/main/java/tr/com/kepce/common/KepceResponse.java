@@ -8,4 +8,8 @@ public class KepceResponse<T> {
     public int code;
     @SerializedName("data")
     public T data;
+
+    public boolean isSuccessful() {
+        return code == 0;
+    }
 }

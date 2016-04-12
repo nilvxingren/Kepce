@@ -12,7 +12,7 @@ import retrofit2.http.POST;
 import retrofit2.http.Path;
 import retrofit2.http.Query;
 import tr.com.kepce.address.Address;
-import tr.com.kepce.cart.Cart;
+import tr.com.kepce.cart.CartResponse;
 import tr.com.kepce.meal.Favorite;
 import tr.com.kepce.meal.Meal;
 import tr.com.kepce.order.Order;
@@ -92,7 +92,7 @@ public interface KepceService {
                                             @Path("id") String id);
 
     @GET("cart")
-    Call<KepceResponse<Cart>> getCart(@Header("Authorization") String authorization);
+    Call<KepceResponse<CartResponse>> getCart(@Header("Authorization") String authorization);
 
     @FormUrlEncoded
     @POST("cart")
